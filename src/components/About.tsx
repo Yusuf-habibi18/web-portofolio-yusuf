@@ -2,6 +2,8 @@ import { animate, useInView, useReducedMotion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { about, contact, cv, profile } from '../data/content';
 import { AboutIntro } from './AboutIntro';
+import { Deco } from './deco/Deco';
+import { GlassCube } from './deco/Objects';
 import { Corners, Crosshair } from './ui/Hud';
 import { GlowOrb } from './ui/Light';
 import { ArrowDown, ArrowUpRight } from './ui/Icons';
@@ -81,6 +83,13 @@ export function About() {
       <GlowOrb className="top-[18%] left-[88%] size-[620px]" strength={0.2} />
       <GlowOrb className="top-[70%] left-[8%] size-[520px]" strength={0.12} delay={4} />
       {/* Same editorial grid as every other section: label left (3 cols), content right (9 cols) */}
+      {/* glass cube: the empty space right of the intro (desktop) / end of the label row (phones) */}
+      <Deco className="absolute top-[400px] right-[9%] hidden xl:block" delay={0.4} depth={14} float={12} floatDuration={8.5}>
+        <GlassCube s={104} />
+      </Deco>
+      <Deco className="absolute top-[88px] right-5 md:top-[124px] xl:hidden" delay={0.3} depth={0} float={8}>
+        <GlassCube s={46} />
+      </Deco>
       <div className="wrap grid gap-10 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-3">
           <Reveal className="md:sticky md:top-28">

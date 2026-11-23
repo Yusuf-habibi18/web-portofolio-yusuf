@@ -7,6 +7,8 @@ import { ArrowUpRight } from './ui/Icons';
 import { Reveal } from './ui/Reveal';
 import { Spotlight } from './ui/Spotlight';
 import { SectionHeading } from './ui/SectionHeading';
+import { Deco } from './deco/Deco';
+import { CodeGlyph, DataCylinder, Microchip, NeuralNet } from './deco/Objects';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -140,6 +142,17 @@ function Panel({ group, delay }: { group: ExpertiseGroup; delay: number }) {
             </li>
           ))}
         </ul>
+        {!dark && (
+          // the web panel is shorter than the data panel on wide screens: its spare space holds the chip + </>
+          <div className="mt-auto hidden items-end justify-end gap-8 pt-10 pr-2 lg:flex" aria-hidden>
+            <Deco delay={0.3} depth={10} float={10} floatDuration={7.5}>
+              <CodeGlyph s={46} />
+            </Deco>
+            <Deco delay={0.55} depth={14} float={12} floatDuration={9}>
+              <Microchip s={84} />
+            </Deco>
+          </div>
+        )}
       </article>
       </Spotlight>
     </Reveal>
@@ -150,7 +163,27 @@ export function Expertise() {
   return (
     <section id="expertise" className="py-24 md:py-36" aria-label="Expertise">
       <div className="wrap">
-        <SectionHeading index="02" label="Expertise" title="Two disciplines, one way of working." accent={['disciplines']} />
+        <SectionHeading
+          index="02"
+          label="Expertise"
+          title="Two disciplines, one way of working."
+          accent={['disciplines']}
+          deco={
+            <div className="flex items-end gap-5">
+              <Deco delay={0.2} depth={8} float={9} floatDuration={8}>
+                <NeuralNet w={150} />
+              </Deco>
+              <Deco delay={0.45} depth={12} float={12} floatDuration={9}>
+                <DataCylinder s={56} />
+              </Deco>
+            </div>
+          }
+          decoMobile={
+            <Deco delay={0.3} depth={0} float={8}>
+              <DataCylinder s={40} />
+            </Deco>
+          }
+        />
         <div className="relative mt-14 grid gap-4 md:mt-20 lg:grid-cols-2 lg:gap-5">
           {expertise.map((g, i) => (
             <Panel key={g.id} group={g} delay={i * 0.12} />

@@ -7,6 +7,8 @@ import { ArrowUp, ArrowUpRight, Chat, Check, Copy, FileText, Github, Linkedin } 
 import { GlowOrb } from './ui/Light';
 import { Magnetic } from './ui/Magnetic';
 import { Reveal, WordsReveal } from './ui/Reveal';
+import { Deco } from './deco/Deco';
+import { HoloCloud } from './deco/Objects';
 import { ScrambleText } from './ui/ScrambleText';
 
 export function Contact() {
@@ -39,7 +41,14 @@ export function Contact() {
       {/* aurora: blue light pooling behind the heading and along the bottom */}
       <GlowOrb className="top-[24%] left-[64%] size-[min(120vw,960px)]" strength={0.34} />
       <GlowOrb className="top-[88%] left-[10%] size-[min(110vw,760px)]" strength={0.2} delay={4.5} />
-      <div className="wrap pt-24 pb-10 md:pt-36">
+      <div className="wrap relative pt-24 pb-10 md:pt-36">
+        {/* holographic cloud: right of "Let's talk." on wide screens, end of the label row elsewhere */}
+        <Deco className="absolute top-[210px] right-[clamp(1rem,4vw,3.5rem)] hidden min-[1440px]:block" delay={0.4} depth={14} float={12} floatDuration={9}>
+          <HoloCloud w={140} />
+        </Deco>
+        <Deco className="absolute top-[74px] right-[clamp(1rem,4vw,3.5rem)] md:top-[122px] min-[1440px]:hidden" delay={0.3} depth={0} float={8}>
+          <HoloCloud w={70} />
+        </Deco>
         <Reveal>
           <p className="eyebrow flex items-center gap-3 text-slate">
             <span className="mono text-royal-soft">[05]</span>

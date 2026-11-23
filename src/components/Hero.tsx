@@ -19,6 +19,8 @@ import { Corners, Crosshair } from './ui/Hud';
 import { GlowOrb } from './ui/Light';
 import { ScrambleText } from './ui/ScrambleText';
 import { ArrowDown, MapPin } from './ui/Icons';
+import { Deco } from './deco/Deco';
+import { HoloOrb } from './deco/Objects';
 
 // The 3D portrait (WebGL) loads separately, after the hero is on screen.
 const Portrait3D = lazy(() => import('./Portrait3D'));
@@ -220,6 +222,11 @@ export function Hero({ ready }: { ready: boolean }) {
           </motion.span>
         ))}
       </div>
+
+      {/* holographic orb: the quiet space right of the name, above the scroll badge (desktop only) */}
+      <Deco className="absolute top-[55%] right-[12%] z-0 hidden lg:block" delay={1.6} depth={16} float={12} floatDuration={8}>
+        <HoloOrb s={104} />
+      </Deco>
 
       {/* Top meta row */}
       <motion.div
