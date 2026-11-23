@@ -18,7 +18,8 @@ export function GlowOrb({ className = '', strength = 0.35, delay = 0 }: OrbProps
     <span
       className={`pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 rounded-full animate-glow-breathe ${className}`}
       style={{
-        background: `radial-gradient(closest-side, rgb(36 87 255 / ${strength}), rgb(36 87 255 / ${strength * 0.35}) 55%, transparent 100%)`,
+        // electric-blue core falling off through signal blue, like real light
+        background: `radial-gradient(closest-side, rgb(36 87 255 / ${strength}), rgb(117 167 255 / ${strength * 0.42}) 52%, transparent 100%)`,
         animationDelay: `${-delay}s`,
       }}
       aria-hidden

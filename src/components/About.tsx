@@ -86,7 +86,7 @@ export function About() {
           <Reveal className="md:sticky md:top-28">
             <p id="about-title" className="eyebrow flex items-center gap-3 text-muted">
               <span className="mono text-royal-ink">[01]</span>
-              <span className="h-px w-8 bg-current opacity-50" aria-hidden />
+              <span className="h-px w-8 bg-gradient-to-r from-royal to-royal/0" aria-hidden />
               <ScrambleText text="About me" trigger="view" delay={150} duration={700} pendingClassName="text-royal/50" />
             </p>
             <p className="mono mt-3 hidden items-center gap-2 text-muted opacity-70 md:flex" aria-hidden>

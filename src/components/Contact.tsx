@@ -43,7 +43,7 @@ export function Contact() {
         <Reveal>
           <p className="eyebrow flex items-center gap-3 text-slate">
             <span className="mono text-royal-soft">[05]</span>
-            <span className="h-px w-8 bg-current opacity-50" aria-hidden />
+            <span className="h-px w-8 bg-gradient-to-r from-signal to-signal/0" aria-hidden />
             <ScrambleText text="Contact" trigger="view" delay={150} duration={600} pendingClassName="text-royal-soft/60" />
           </p>
         </Reveal>

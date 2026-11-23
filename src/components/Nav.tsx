@@ -5,6 +5,7 @@ import { contact, cv, navLinks, profile } from '../data/content';
 import { useActiveSection } from '../hooks/useActiveSection';
 import { lockScroll, scrollToId } from '../lib/scroll';
 import { ArrowUpRight } from './ui/Icons';
+import { SoundToggle } from './SoundToggle';
 import { ScrambleText } from './ui/ScrambleText';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -74,7 +75,12 @@ export function Nav({ ready }: { ready: boolean }) {
                     layoutId="nav-pill"
                     className="absolute inset-0 rounded-full bg-ink"
                     transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-                  />
+                  >
+                    <span
+                      className="absolute bottom-[5px] left-1/2 size-[3px] -translate-x-1/2 rounded-full bg-signal shadow-[0_0_6px_1px_rgb(117_167_255/0.7)]"
+                      aria-hidden
+                    />
+                  </motion.span>
                 )}
                 <a
                   href={`#${link.id}`}
@@ -91,6 +97,7 @@ export function Nav({ ready }: { ready: boolean }) {
           </ul>
 
           <div className="flex items-center gap-2">
+            <SoundToggle />
             <a
               href={cv.en.href}
               download

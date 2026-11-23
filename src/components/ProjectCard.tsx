@@ -143,9 +143,17 @@ export function ProjectCard({ project, index, total }: { project: Project; index
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 0.25 } }}
       transition={{ layout: { duration: 0.6, ease: EASE } }}
-      className="group/card grid gap-6 border-t border-ink/15 py-10 md:grid-cols-12 md:gap-10 md:py-14"
+      className="group/card relative grid gap-6 border-t border-ink/15 py-10 md:grid-cols-12 md:gap-10 md:py-14"
       aria-labelledby={`project-${project.id}`}
+      onPointerMove={(e) => {
+        if (e.pointerType !== 'mouse') return;
+        const r = e.currentTarget.getBoundingClientRect();
+        e.currentTarget.style.setProperty('--sx', `${e.clientX - r.left}px`);
+        e.currentTarget.style.setProperty('--sy', `${e.clientY - r.top}px`);
+      }}
     >
+      {/* cursor-following light across the whole card (hover devices only, see .card-spotlight) */}
+      <span className="card-spotlight" aria-hidden />
       <Spotlight className={`rounded-2xl md:col-span-7 ${flip ? 'md:order-2' : ''}`} tilt={3}>
         <MediaLink href={open} label={openLabel} title={project.title}>
         <motion.div

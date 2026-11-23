@@ -19,7 +19,10 @@ export function SectionHeading({ index, label, title, accent, tone = 'light' }: 
       <Reveal className="md:col-span-3">
         <p className={`eyebrow flex items-center gap-3 ${muted}`}>
           <span className={`mono ${blue}`}>[{index}]</span>
-          <span className="h-px w-8 bg-current opacity-50" aria-hidden />
+          <span
+            className={`h-px w-8 bg-gradient-to-r ${tone === 'dark' ? 'from-signal to-signal/0' : 'from-royal to-royal/0'}`}
+            aria-hidden
+          />
           <ScrambleText text={label} trigger="view" delay={150} duration={700} pendingClassName="text-royal/50" />
         </p>
         <p className={`mono mt-3 hidden items-center gap-2 opacity-70 md:flex ${muted}`} aria-hidden>

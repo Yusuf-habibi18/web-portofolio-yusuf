@@ -160,7 +160,7 @@ export function Hero({ ready }: { ready: boolean }) {
         {['25%', '75%'].map((left, i) => (
           <motion.span
             key={left}
-            className="absolute top-[62%] -translate-x-1/2 -translate-y-1/2 text-ink/40"
+            className="absolute top-[62%] -translate-x-1/2 -translate-y-1/2 text-royal/50"
             style={{ left }}
             initial={{ opacity: 0 }}
             animate={ready ? { opacity: 1 } : undefined}
@@ -225,6 +225,8 @@ export function Hero({ ready }: { ready: boolean }) {
       >
         {/* gentle float on phones/tablets so the portrait never sits still */}
         <div className={`relative lg:h-full ${reduce ? '' : 'max-lg:animate-float'}`}>
+        {/* rim light: a thin signal-blue edge + soft halo following the silhouette */}
+        <div className="rim-light lg:h-full">
         <motion.img
           src={portrait}
           srcSet={`${portraitSm} 640w, ${portrait} 1000w, ${portraitLg} 1400w`}
@@ -239,6 +241,7 @@ export function Hero({ ready }: { ready: boolean }) {
           animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : undefined}
           transition={{ duration: 1.4, ease: EASE, delay: 0.25 }}
         />
+        </div>
 
         {/* One scan pass over the portrait as the site opens */}
         {!reduce && (
@@ -257,7 +260,7 @@ export function Hero({ ready }: { ready: boolean }) {
 
         {/* Viewfinder frame (labels on desktop only) */}
         <motion.span
-          className="pointer-events-none absolute -inset-x-[7%] top-[2%] bottom-[9%] text-ink/35"
+          className="pointer-events-none absolute -inset-x-[7%] top-[2%] bottom-[9%] text-royal/55"
           initial={{ opacity: 0, scale: 1.04 }}
           animate={ready ? { opacity: 1, scale: 1 } : undefined}
           transition={{ duration: 1.2, ease: EASE, delay: 1.1 }}
@@ -321,6 +324,9 @@ export function Hero({ ready }: { ready: boolean }) {
               <defs>
                 <path id="badge-circle" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" />
               </defs>
+              {/* outer orbit with a small blue marker travelling round */}
+              <circle cx="50" cy="50" r="47" fill="none" className="stroke-royal/25" strokeWidth="0.6" />
+              <circle cx="50" cy="3" r="1.8" className="fill-royal" />
               <text className="fill-ink font-display text-[9.2px] font-medium tracking-[0.22em] uppercase">
                 <textPath href="#badge-circle">Scroll to explore · Web &amp; Data ·</textPath>
               </text>

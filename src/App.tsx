@@ -5,6 +5,7 @@ import { Contact } from './components/Contact';
 import { CyberCursor } from './components/CyberCursor';
 import { Education } from './components/Education';
 import { Expertise } from './components/Expertise';
+import { GridGlow } from './components/GridGlow';
 import { Hero } from './components/Hero';
 import { Marquee } from './components/Marquee';
 import { Nav } from './components/Nav';
@@ -41,6 +42,7 @@ export default function App() {
         Skip to content
       </a>
       <SoundAutoplay />
+      <GridGlow />
       <AmbientWaves ready={ready} />
       <Nav ready={ready} />
       {ready && <CyberCursor />}

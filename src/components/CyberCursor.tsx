@@ -86,7 +86,7 @@ export function CyberCursor() {
         style={{
           opacity: visible ? 1 : 0,
           background:
-            'radial-gradient(460px circle at var(--mx, -999px) var(--my, -999px), rgb(36 87 255 / 0.13), rgb(36 87 255 / 0.05) 45%, transparent 70%)',
+            'radial-gradient(460px circle at var(--mx, -999px) var(--my, -999px), rgb(36 87 255 / 0.09), rgb(117 167 255 / 0.035) 45%, transparent 70%)',
         }}
         aria-hidden
       >
@@ -95,7 +95,7 @@ export function CyberCursor() {
           className="absolute inset-0 mix-blend-screen"
           style={{
             background:
-              'radial-gradient(420px circle at var(--mx, -999px) var(--my, -999px), rgb(36 87 255 / 0.34), rgb(36 87 255 / 0.1) 45%, transparent 70%)',
+              'radial-gradient(420px circle at var(--mx, -999px) var(--my, -999px), rgb(36 87 255 / 0.26), rgb(117 167 255 / 0.08) 45%, transparent 70%)',
           }}
         />
       </div>

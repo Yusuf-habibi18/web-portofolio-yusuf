@@ -29,8 +29,8 @@ export function Projects() {
                   type="button"
                   aria-pressed={active}
                   onClick={() => setFilter(f)}
-                  className={`relative h-11 rounded-full px-5 text-sm font-medium transition-colors duration-300 ${
-                    active ? 'text-paper' : 'text-ink ring-1 ring-ink/20 ring-inset hover:ring-ink/60'
+                  className={`relative h-11 rounded-full px-5 text-sm font-medium transition-[color,box-shadow] duration-300 ${
+                    active ? 'text-paper' : 'text-ink ring-1 ring-ink/20 ring-inset hover:ring-royal/70 hover:shadow-[0_0_18px_-6px_rgb(36_87_255/0.55)]'
                   }`}
                 >
                   {active && (
