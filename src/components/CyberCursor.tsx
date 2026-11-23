@@ -8,6 +8,7 @@ const pad4 = (n: number) => Math.round(n).toString().padStart(4, '0');
  *  - a ring + dot that follow the cursor with live X/Y coordinates;
  *    the ring grows over links/buttons and shows a label over [data-cursor] elements;
  *  - the page grid lights up in electric blue around the pointer (behind content).
+ *  - a soft electric-blue light follows the pointer across the whole page.
  * The native cursor is kept, so nothing about usability changes.
  */
 export function CyberCursor() {
@@ -18,6 +19,7 @@ export function CyberCursor() {
   const [mode, setMode] = useState<'idle' | 'link' | 'label'>('idle');
   const [label, setLabel] = useState('');
   const spot = useRef<HTMLDivElement>(null);
+  const glow = useRef<HTMLDivElement>(null);
   const coord = useRef<HTMLSpanElement>(null);
 
   const x = useMotionValue(-100);
@@ -33,6 +35,8 @@ export function CyberCursor() {
       y.set(e.clientY);
       spot.current?.style.setProperty('--mx', `${e.clientX}px`);
       spot.current?.style.setProperty('--my', `${e.clientY}px`);
+      glow.current?.style.setProperty('--mx', `${e.clientX}px`);
+      glow.current?.style.setProperty('--my', `${e.clientY}px`);
       if (coord.current) coord.current.textContent = `X ${pad4(e.clientX)} · Y ${pad4(e.clientY)}`;
       setVisible(true);
     };
@@ -75,6 +79,26 @@ export function CyberCursor() {
         }}
         aria-hidden
       />
+      {/* Electric-blue light that follows the pointer over everything (light and dark sections alike) */}
+      <div
+        ref={glow}
+        className="pointer-events-none fixed inset-0 z-40 transition-opacity duration-500"
+        style={{
+          opacity: visible ? 1 : 0,
+          background:
+            'radial-gradient(460px circle at var(--mx, -999px) var(--my, -999px), rgb(36 87 255 / 0.13), rgb(36 87 255 / 0.05) 45%, transparent 70%)',
+        }}
+        aria-hidden
+      >
+        {/* screen-blended layer: barely changes light areas, glows clearly on dark ones */}
+        <div
+          className="absolute inset-0 mix-blend-screen"
+          style={{
+            background:
+              'radial-gradient(420px circle at var(--mx, -999px) var(--my, -999px), rgb(36 87 255 / 0.34), rgb(36 87 255 / 0.1) 45%, transparent 70%)',
+          }}
+        />
+      </div>
       {/* Cursor */}
       <motion.div
         className="pointer-events-none fixed top-0 left-0 z-[90] transition-opacity duration-300"
