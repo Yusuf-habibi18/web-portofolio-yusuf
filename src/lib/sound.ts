@@ -8,8 +8,15 @@
  * and sparse sine "data" plucks with a feedback delay, over a faint air layer.
  */
 
-const MUSIC_LEVEL = 0.2;
-const SFX_LEVEL = 0.32;
+/**
+ * Phones/tablets: tiny speakers can't play the low pad and sub, so the same mix
+ * sounds much quieter there. They get higher levels, a brighter pad and a
+ * "phone speaker" EQ + limiter (see build()). Laptops/desktops are unchanged.
+ */
+const PHONE = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+
+const MUSIC_LEVEL = PHONE ? 0.38 : 0.2;
+const SFX_LEVEL = PHONE ? 0.62 : 0.32;
 
 const mtof = (m: number) => 440 * Math.pow(2, (m - 69) / 12);
 
@@ -54,11 +61,48 @@ function build(): Engine {
   const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
   const ctx = new Ctx();
 
+  // Output: straight to the speakers on laptops; on phones through an EQ tuned for small
+  // speakers (cut the inaudible lows, lift the presence range) + makeup gain + limiter.
+  // iPhone: play as media ("playback") rather than as a page sound effect
+  const nav = navigator as Navigator & { audioSession?: { type: string } };
+  try {
+    if (nav.audioSession) nav.audioSession.type = 'playback';
+  } catch {
+    /* not supported */
+  }
+
+  let out: AudioNode = ctx.destination;
+  if (PHONE) {
+    const hp = ctx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 170;
+    hp.Q.value = 0.6;
+    const presence = ctx.createBiquadFilter();
+    presence.type = 'peaking';
+    presence.frequency.value = 1300;
+    presence.Q.value = 0.7;
+    presence.gain.value = 6;
+    const shelf = ctx.createBiquadFilter();
+    shelf.type = 'highshelf';
+    shelf.frequency.value = 3500;
+    shelf.gain.value = 3;
+    const makeup = ctx.createGain();
+    makeup.gain.value = 1.9;
+    const limiter = ctx.createDynamicsCompressor();
+    limiter.threshold.value = -3;
+    limiter.knee.value = 2;
+    limiter.ratio.value = 20;
+    limiter.attack.value = 0.003;
+    limiter.release.value = 0.15;
+    hp.connect(presence).connect(shelf).connect(makeup).connect(limiter).connect(ctx.destination);
+    out = hp;
+  }
+
   const master = ctx.createGain();
   master.gain.value = 0;
   const comp = ctx.createDynamicsCompressor();
   comp.threshold.value = -18;
-  master.connect(comp).connect(ctx.destination);
+  master.connect(comp).connect(out);
 
   const music = ctx.createGain();
   music.gain.value = MUSIC_LEVEL;
@@ -73,12 +117,12 @@ function build(): Engine {
   // Pad bus: low-pass that slowly "breathes"
   const lp = ctx.createBiquadFilter();
   lp.type = 'lowpass';
-  lp.frequency.value = 850;
+  lp.frequency.value = PHONE ? 1500 : 850; // brighter on phones so the pad's harmonics carry
   lp.Q.value = 0.8;
   const lfo = ctx.createOscillator();
   lfo.frequency.value = 0.05;
   const lfoDepth = ctx.createGain();
-  lfoDepth.gain.value = 450;
+  lfoDepth.gain.value = PHONE ? 600 : 450;
   lfo.connect(lfoDepth).connect(lp.frequency);
   lfo.start();
   const dry = ctx.createGain();
@@ -123,7 +167,7 @@ function build(): Engine {
 
   const ui = ctx.createGain();
   ui.gain.value = SFX_LEVEL;
-  ui.connect(ctx.destination);
+  ui.connect(out);
 
   return { ctx, master, pad: lp, pluckBus, sfx, ui };
 }
@@ -319,19 +363,15 @@ export const sound = {
   },
 
   /** Used by the nav toggle: switch sound first, then turn music on/off. */
-  async toggle() {
+  toggle() {
     const next = !on;
     engine ??= build();
     const e = engine;
-    if (next) {
-      try {
-        await e.ctx.resume();
-      } catch {
-        /* blocked */
-      }
-    }
+    // never wait on resume(): the button must flip instantly; sounds scheduled while the
+    // context is still waking up play as soon as it runs
+    if (next) e.ctx.resume().catch(() => {});
     switchSfx(e, next);
-    await this.setOn(next);
+    void this.setOn(next);
   },
 
   /** Tiny rising blip for hovering interactive elements. */
