@@ -10,11 +10,13 @@ type OrbProps = {
   strength?: number;
   /** Seconds to offset the breathing so several orbs don't pulse together. */
   delay?: number;
+  /** Let the light wander slowly around its spot. */
+  drift?: boolean;
 };
 
 /** A soft, slowly breathing pool of blue light, centred on its left/top point. */
-export function GlowOrb({ className = '', strength = 0.35, delay = 0 }: OrbProps) {
-  return (
+export function GlowOrb({ className = '', strength = 0.35, delay = 0, drift = false }: OrbProps) {
+  const orb = (
     <span
       className={`pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 rounded-full animate-glow-breathe ${className}`}
       style={{
@@ -24,6 +26,12 @@ export function GlowOrb({ className = '', strength = 0.35, delay = 0 }: OrbProps
       }}
       aria-hidden
     />
+  );
+  if (!drift) return orb;
+  return (
+    <span className="pointer-events-none absolute inset-0 animate-ambient-drift" style={{ animationDelay: `${-delay * 3}s` }} aria-hidden>
+      {orb}
+    </span>
   );
 }
 

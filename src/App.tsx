@@ -51,13 +51,7 @@ export default function App() {
         <Hero ready={ready} />
         <Marquee />
         <About />
-        <div className="wrap" aria-hidden>
-          <LightBeam />
-        </div>
         <Expertise />
-        <div className="wrap" aria-hidden>
-          <LightBeam delay={2.3} />
-        </div>
         <Projects />
         <div className="wrap" aria-hidden>
           <LightBeam delay={4.6} />

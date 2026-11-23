@@ -12,9 +12,10 @@ import { ScrambleText } from '../ui/ScrambleText';
  * opacity / dash-offset only. Reduced motion: drawn and static.
  */
 
-const INK = '#111216';
+const INK = 'currentColor';
+/** line colour comes from --gfx-ink (ink on light sections, paper on dark ones) */
+const GFX: CSSProperties = { color: 'var(--gfx-ink, #111216)' };
 const ROYAL = '#2457ff';
-const SIGNAL = '#75a7ff';
 
 /** Props that make an SVG shape draw itself in once it scrolls into view. */
 function useDraw() {
@@ -49,93 +50,6 @@ const spin = (seconds: number, reverse = false, origin = '50px 50px'): CSSProper
   animationDirection: reverse ? 'reverse' : 'normal',
 });
 
-/* ── Wireframe sphere: meridians turning, latitudes fixed ─────────────────── */
-export function WireSphere({ s = 120 }: { s?: number }) {
-  const draw = useDraw();
-  const appear = useAppear();
-  const R = 44;
-  const tilt = 0.26; // seen slightly from above
-  const lats = [-50, -25, 0, 25, 50];
-  return (
-    <svg viewBox="0 0 100 100" width={s} height={s} className="overflow-visible">
-      <motion.circle cx="50" cy="50" r={R} fill="none" stroke={INK} strokeOpacity="0.5" strokeWidth="0.7" {...draw(0)} />
-      {lats.map((lat, i) => {
-        const rad = (lat * Math.PI) / 180;
-        const rx = R * Math.cos(rad);
-        return (
-          <motion.ellipse
-            key={lat}
-            cx="50"
-            cy={50 - R * Math.sin(rad) * 0.97}
-            rx={rx}
-            ry={rx * tilt}
-            fill="none"
-            stroke={lat === 0 ? ROYAL : INK}
-            strokeOpacity={lat === 0 ? 0.7 : 0.22}
-            strokeWidth="0.6"
-            {...draw(0.15 + i * 0.08)}
-          />
-        );
-      })}
-      {/* meridians: an ellipse squashing 1 → 0 → 1 reads as a line of longitude turning round */}
-      {[0, 1, 2, 3].map((i) => (
-        <ellipse
-          key={i}
-          cx="50"
-          cy="50"
-          rx={R}
-          ry={R}
-          fill="none"
-          stroke={i === 0 ? ROYAL : INK}
-          strokeOpacity={i === 0 ? 0.55 : 0.2}
-          strokeWidth="0.6"
-          className="animate-gfx-meridian"
-          style={{ transformOrigin: '50px 50px', animationDelay: `${-i * 2}s` }}
-        />
-      ))}
-      <motion.g {...appear(0.9)}>
-        <circle cx={50 + R} cy="50" r="1.6" fill={ROYAL} />
-        <line x1={50 + R + 3} y1="50" x2={50 + R + 12} y2="50" stroke={INK} strokeOpacity="0.4" strokeWidth="0.5" />
-      </motion.g>
-    </svg>
-  );
-}
-
-/* ── Glitch geometry: square + triangle with displaced slices ─────────────── */
-export function GlitchGeometry({ s = 88 }: { s?: number }) {
-  const draw = useDraw();
-  const shape = (
-    <>
-      <rect x="18" y="24" width="46" height="46" fill="none" strokeWidth="0.8" />
-      <path d="M44 16 L82 80 L6 80 Z" fill="none" strokeWidth="0.8" />
-    </>
-  );
-  return (
-    <svg viewBox="0 0 100 100" width={s} height={s} className="overflow-visible">
-      <defs>
-        <clipPath id="gl-a">
-          <rect x="0" y="30" width="100" height="9" />
-          <rect x="0" y="62" width="100" height="5" />
-        </clipPath>
-        <clipPath id="gl-b">
-          <rect x="0" y="46" width="100" height="6" />
-        </clipPath>
-      </defs>
-      <motion.rect x="18" y="24" width="46" height="46" fill="none" stroke={INK} strokeOpacity="0.55" strokeWidth="0.8" {...draw(0)} />
-      <motion.path d="M44 16 L82 80 L6 80 Z" fill="none" stroke={INK} strokeOpacity="0.55" strokeWidth="0.8" {...draw(0.2)} />
-      {/* displaced slices: settle near 0, jump briefly every few seconds */}
-      <g clipPath="url(#gl-a)" stroke={ROYAL} strokeOpacity="0.8" className="animate-gfx-glitch-a">
-        {shape}
-      </g>
-      <g clipPath="url(#gl-b)" stroke={SIGNAL} className="animate-gfx-glitch-b">
-        {shape}
-      </g>
-      <rect x="70" y="30" width="14" height="1.6" fill={ROYAL} className="animate-gfx-glitch-a" />
-      <rect x="2" y="58" width="9" height="1.2" fill={INK} fillOpacity="0.5" className="animate-gfx-glitch-b" />
-    </svg>
-  );
-}
-
 /* ── Orbital rings around a core ──────────────────────────────────────────── */
 export function OrbitalRings({ s = 130 }: { s?: number }) {
   const draw = useDraw();
@@ -146,7 +60,7 @@ export function OrbitalRings({ s = 130 }: { s?: number }) {
     { rot: 82, rx: 30, ry: 10, dur: 15, blue: false },
   ];
   return (
-    <svg viewBox="0 0 100 100" width={s} height={s} className="overflow-visible">
+    <svg viewBox="0 0 100 100" width={s} height={s} className="overflow-visible" style={GFX}>
       {rings.map((r, i) => (
         <g key={i} className="animate-gfx-spin" style={spin(r.dur, i % 2 === 1)}>
           <g transform={`rotate(${r.rot} 50 50)`}>
@@ -178,7 +92,7 @@ export function TechCoords({ lines, align = 'left' }: { lines: [string, string][
   const draw = useDraw();
   return (
     <div className={`mono flex flex-col gap-1.5 text-[0.625rem] tracking-[0.14em] text-muted ${align === 'right' ? 'items-end text-right' : ''}`}>
-      <svg viewBox="0 0 120 12" width="120" height="12" className="mb-1 overflow-visible">
+      <svg viewBox="0 0 120 12" width="120" height="12" className="mb-1 overflow-visible" style={GFX}>
         <motion.line x1="0" y1="6" x2="120" y2="6" stroke={INK} strokeOpacity="0.35" strokeWidth="0.6" {...draw(0, 1.2)} />
         {Array.from({ length: 13 }, (_, i) => (
           <motion.line
@@ -227,7 +141,7 @@ export function CircuitPattern({ w = 200 }: { w?: number }) {
     [70, 74],
   ];
   return (
-    <svg viewBox="0 0 200 90" width={w} height={(w * 90) / 200} className="overflow-visible">
+    <svg viewBox="0 0 200 90" width={w} height={(w * 90) / 200} className="overflow-visible" style={GFX}>
       {traces.map((d, i) => (
         <motion.path key={i} d={d} fill="none" stroke={INK} strokeOpacity="0.22" strokeWidth="0.8" {...draw(i * 0.12)} />
       ))}
@@ -248,7 +162,7 @@ export function CircuitPattern({ w = 200 }: { w?: number }) {
       ))}
       <motion.g {...appear(1)}>
         {vias.map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r="2.4" fill="#ffffff" stroke={INK} strokeOpacity="0.45" strokeWidth="0.7" />
+          <circle key={i} cx={x} cy={y} r="2.4" className="gfx-fill" stroke={INK} strokeOpacity="0.45" strokeWidth="0.7" />
         ))}
         {/* chip pad the traces run into */}
         <rect x="178" y="22" width="20" height="60" rx="1.5" fill="none" stroke={INK} strokeOpacity="0.4" strokeWidth="0.8" />
@@ -274,7 +188,7 @@ export function GeoCube({ s = 84 }: { s?: number }) {
   const n = iso(50, 50, 18);
   const P = (...pts: (readonly [number, number])[]) => pts.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(2)} ${y.toFixed(2)}`).join(' ');
   return (
-    <svg viewBox="0 0 100 100" width={s} height={s} className="overflow-visible">
+    <svg viewBox="0 0 100 100" width={s} height={s} className="overflow-visible" style={GFX}>
       {/* top face lit */}
       <motion.path d={`${P(o.t, o.tr, o.c, o.tl)} Z`} fill={ROYAL} className="animate-gfx-face" {...useAppear()(1.1)} />
       <motion.path d={`${P(o.t, o.tr, o.br, o.b, o.bl, o.tl)} Z`} fill="none" stroke={INK} strokeOpacity="0.55" strokeWidth="0.8" {...draw(0)} />
@@ -318,7 +232,7 @@ export function NetworkNodes({ w = 160 }: { w?: number }) {
   ];
   const packets = [1, 6, 9];
   return (
-    <svg viewBox="0 0 156 72" width={w} height={(w * 72) / 156} className="overflow-visible">
+    <svg viewBox="0 0 156 72" width={w} height={(w * 72) / 156} className="overflow-visible" style={GFX}>
       {E.map(([a, b], i) => (
         <motion.line
           key={i}
@@ -371,7 +285,8 @@ export function NetworkNodes({ w = 160 }: { w?: number }) {
               cx={x}
               cy={y}
               r={k === 2 ? 3 : 2.2}
-              fill={k === 2 ? ROYAL : '#ffffff'}
+              fill={k === 2 ? ROYAL : undefined}
+              className={k === 2 ? undefined : 'gfx-fill'}
               stroke={k === 2 ? ROYAL : INK}
               strokeOpacity={k === 2 ? 1 : 0.5}
               strokeWidth="0.7"
@@ -388,7 +303,7 @@ export function HudRadar({ s = 104 }: { s?: number }) {
   const draw = useDraw();
   const appear = useAppear();
   return (
-    <svg viewBox="0 0 100 100" width={s} height={s} className="overflow-visible">
+    <svg viewBox="0 0 100 100" width={s} height={s} className="overflow-visible" style={GFX}>
       <defs>
         <linearGradient id="radar-sweep" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor={ROYAL} stopOpacity="0" />

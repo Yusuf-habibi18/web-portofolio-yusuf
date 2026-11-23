@@ -19,8 +19,6 @@ import { Corners, Crosshair } from './ui/Hud';
 import { GlowOrb } from './ui/Light';
 import { ScrambleText } from './ui/ScrambleText';
 import { ArrowDown, MapPin } from './ui/Icons';
-import { Deco } from './deco/Deco';
-import { GlitchGeometry, WireSphere } from './deco/Graphics';
 
 // The 3D portrait (WebGL) loads separately, after the hero is on screen.
 const Portrait3D = lazy(() => import('./Portrait3D'));
@@ -189,7 +187,7 @@ export function Hero({ ready }: { ready: boolean }) {
       aria-label="Introduction"
     >
       {/* Back-light: a soft blue pool behind the portrait, like a stage light */}
-      <GlowOrb className="top-[64%] left-1/2 size-[min(120vw,900px)] lg:top-[60%]" strength={0.3} />
+      <GlowOrb className="top-[64%] left-1/2 size-[min(120vw,900px)] lg:top-[60%]" strength={0.3} drift />
 
       {/* Swiss grid hairlines */}
       <div className="wrap pointer-events-none absolute inset-0 grid grid-cols-4" aria-hidden>
@@ -223,13 +221,6 @@ export function Hero({ ready }: { ready: boolean }) {
         ))}
       </div>
 
-      {/* line-work accents in the quiet spaces around the name (desktop only) */}
-      <Deco className="absolute top-[54%] right-[11%] z-0 hidden lg:block" delay={1.6} depth={14} float={10} floatDuration={9}>
-        <WireSphere s={118} />
-      </Deco>
-      <Deco className="absolute top-[56%] left-[clamp(1rem,4vw,3.5rem)] z-0 hidden lg:block" delay={1.9} depth={10} float={8} floatDuration={8}>
-        <GlitchGeometry s={78} />
-      </Deco>
 
       {/* Top meta row */}
       <motion.div

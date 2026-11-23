@@ -6,6 +6,7 @@ import { Deco } from './deco/Deco';
 import { OrbitalRings, TechCoords } from './deco/Graphics';
 import { Corners, Crosshair } from './ui/Hud';
 import { GlowOrb } from './ui/Light';
+import { Blueprint, Tint } from './ui/Backdrop';
 import { ArrowDown, ArrowUpRight } from './ui/Icons';
 import { Reveal } from './ui/Reveal';
 import { ScrambleText } from './ui/ScrambleText';
@@ -79,8 +80,17 @@ function CountUp({ value, decimals }: { value: number; decimals: number }) {
 
 export function About() {
   return (
-    <section id="about" className="relative py-24 md:py-36" aria-labelledby="about-title">
-      <GlowOrb className="top-[18%] left-[88%] size-[620px]" strength={0.2} />
+    <section id="about" className="relative isolate py-24 md:py-36" aria-labelledby="about-title">
+      {/* light gray band + blueprint corner marks */}
+      <Tint />
+      <Blueprint
+        marks={[
+          { at: 'tr', label: 'SYS-001', sub: 'PROFILE' },
+          { at: 'bl', label: 'DATA.NODE', sub: '01 / 05', phone: true },
+          { at: 'br', label: 'COORD:', sub: '04.21', phone: true },
+        ]}
+      />
+      <GlowOrb className="top-[18%] left-[88%] size-[620px]" strength={0.2} drift />
       <GlowOrb className="top-[70%] left-[8%] size-[520px]" strength={0.12} delay={4} />
       {/* Same editorial grid as every other section: label left (3 cols), content right (9 cols) */}
       <div className="wrap grid gap-10 md:grid-cols-12 md:gap-8">

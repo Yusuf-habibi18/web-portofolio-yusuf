@@ -7,6 +7,7 @@ import { Reveal } from './ui/Reveal';
 import { SectionHeading } from './ui/SectionHeading';
 import { Deco } from './deco/Deco';
 import { TechCoords } from './deco/Graphics';
+import { LitGrid } from './ui/Backdrop';
 
 type Filter = 'All' | Project['category'];
 const FILTERS: Filter[] = ['All', 'Web Development', 'Data Engineering'];
@@ -17,7 +18,9 @@ export function Projects() {
   const count = (f: Filter) => (f === 'All' ? projects.length : projects.filter((p) => p.category === f).length);
 
   return (
-    <section id="projects" className="py-24 md:py-36" aria-label="Featured projects">
+    <section id="projects" className="relative py-24 md:py-36" aria-label="Featured projects">
+      {/* the page grid lights up gently while this section is on screen */}
+      <LitGrid />
       <div className="wrap">
         <SectionHeading
           index="03"

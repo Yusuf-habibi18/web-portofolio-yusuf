@@ -3,6 +3,7 @@ import { Corners } from './ui/Hud';
 import { Reveal } from './ui/Reveal';
 import { ScrambleText } from './ui/ScrambleText';
 import { Spotlight } from './ui/Spotlight';
+import { Grain, Tint } from './ui/Backdrop';
 import { SectionHeading } from './ui/SectionHeading';
 
 function Slot({ title, items }: { title: string; items: string[] }) {
@@ -24,7 +25,10 @@ function Slot({ title, items }: { title: string; items: string[] }) {
 
 export function Education() {
   return (
-    <section id="education" className="py-24 md:py-36" aria-label="Education">
+    <section id="education" className="relative isolate py-24 md:py-36" aria-label="Education">
+      {/* light gray band with a fine grain */}
+      <Tint />
+      <Grain />
       <div className="wrap">
         <SectionHeading index="04" label="Education" title="Where I study." accent={['study.']} />
 

@@ -35,10 +35,10 @@ export function Contact() {
   ];
 
   return (
-    <section id="contact" className="grid-dark relative overflow-hidden bg-ink text-paper" aria-label="Contact">
+    <section id="contact" className="grid-dark relative overflow-hidden bg-navy text-paper" aria-label="Contact">
       {/* aurora: blue light pooling behind the heading and along the bottom */}
-      <GlowOrb className="top-[24%] left-[64%] size-[min(120vw,960px)]" strength={0.34} />
-      <GlowOrb className="top-[88%] left-[10%] size-[min(110vw,760px)]" strength={0.2} delay={4.5} />
+      <GlowOrb className="top-[24%] left-[64%] size-[min(120vw,960px)]" strength={0.34} drift />
+      <GlowOrb className="top-[88%] left-[10%] size-[min(110vw,760px)]" strength={0.2} delay={4.5} drift />
       <div className="wrap pt-24 pb-10 md:pt-36">
         <Reveal>
           <p className="eyebrow flex items-center gap-3 text-slate">

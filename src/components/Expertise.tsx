@@ -3,6 +3,7 @@ import { expertise } from '../data/content';
 import type { ExpertiseGroup } from '../data/content';
 import { Corners } from './ui/Hud';
 import { GlowOrb } from './ui/Light';
+import { CircuitFlow } from './ui/Backdrop';
 import { ArrowUpRight } from './ui/Icons';
 import { Reveal } from './ui/Reveal';
 import { Spotlight } from './ui/Spotlight';
@@ -80,7 +81,7 @@ function Panel({ group, delay }: { group: ExpertiseGroup; delay: number }) {
       <article
         className={`group/panel relative flex h-full flex-col rounded-[1.75rem] p-6 transition-shadow duration-500 md:p-10 ${
           dark
-            ? 'bg-ink text-paper hover:shadow-[0_30px_60px_-30px_rgba(17,18,22,0.7)]'
+            ? 'bg-[#1a2130] text-paper ring-1 ring-paper/10 ring-inset hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.6)]'
             : 'bg-surface text-ink hover:shadow-[0_30px_60px_-30px_rgba(17,18,22,0.35)]'
         }`}
       >
@@ -161,15 +162,21 @@ function Panel({ group, delay }: { group: ExpertiseGroup; delay: number }) {
 
 export function Expertise() {
   return (
-    <section id="expertise" className="py-24 md:py-36" aria-label="Expertise">
+    <section id="expertise" className="grid-dark relative isolate overflow-hidden bg-navy py-24 text-paper md:py-36" aria-label="Expertise">
+      {/* dark navy band: circuit lines with light flowing along them + a soft blue light in the corner */}
+      <CircuitFlow />
+      <span className="pointer-events-none absolute inset-0 -z-10" aria-hidden>
+        <GlowOrb className="top-[8%] left-[12%] size-[min(110vw,760px)]" strength={0.2} drift />
+      </span>
       <div className="wrap">
         <SectionHeading
           index="02"
           label="Expertise"
           title="Two disciplines, one way of working."
           accent={['disciplines']}
+          tone="dark"
           deco={
-            <div className="flex items-end gap-5">
+            <div className="flex items-end gap-5 [--gfx-fill:#11151d] [--gfx-ink:#dde0e2]">
               <Deco delay={0.2} depth={8} float={8} floatDuration={9}>
                 <NetworkNodes w={150} />
               </Deco>
@@ -179,7 +186,7 @@ export function Expertise() {
             </div>
           }
           decoMobile={
-            <Deco delay={0.3} depth={0} float={8}>
+            <Deco delay={0.3} depth={0} float={8} className="[--gfx-fill:#11151d] [--gfx-ink:#dde0e2]">
               <HudRadar s={48} />
             </Deco>
           }

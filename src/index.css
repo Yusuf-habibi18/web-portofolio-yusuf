@@ -19,6 +19,8 @@
   --color-slate: #85858b; /* large / decorative secondary text only */
   --color-muted: #55565c; /* small secondary text (AA on paper) */
   --color-line: #c3c7cb;
+  --color-navy: #11151d; /* dark sections (Expertise, Contact) */
+  --color-mist: #f5f6f7; /* light gray bands (About, Education) */
 
   --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
@@ -44,27 +46,32 @@
 
   /* decorative graphics (components/deco) */
   --animate-deco-float: deco-float 7s ease-in-out infinite;
+  --animate-ambient-drift: ambient-drift 28s ease-in-out infinite;
+  --animate-grid-lit: grid-lit 14s ease-in-out infinite;
+
+  /* ambient light pools wander slowly (transform only) */
+  @keyframes ambient-drift {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    33% { transform: translate3d(4%, -3%, 0); }
+    66% { transform: translate3d(-3%, 2.5%, 0); }
+  }
+  /* grid patches brighten and dim in turn */
+  @keyframes grid-lit {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 1; }
+  }
   --animate-gfx-spin: gfx-spin 14s linear infinite;
-  --animate-gfx-meridian: gfx-meridian 8s infinite;
   --animate-gfx-light: gfx-light 4s linear infinite;
   --animate-gfx-pulse: gfx-pulse 3.2s ease-in-out infinite;
   --animate-gfx-ping: gfx-ping 3.2s ease-out infinite;
   --animate-gfx-blip: gfx-blip 7s linear infinite;
   --animate-gfx-face: gfx-face 6s ease-in-out infinite;
-  --animate-gfx-glitch-a: gfx-glitch-a 6s steps(1, end) infinite;
-  --animate-gfx-glitch-b: gfx-glitch-b 6s steps(1, end) infinite;
 
   @keyframes deco-float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(var(--amp, -10px)); }
   }
   @keyframes gfx-spin { to { transform: rotate(360deg); } }
-  /* a meridian squashing 1 -> 0 -> 1 with cosine-like easing = a line of longitude turning */
-  @keyframes gfx-meridian {
-    0% { transform: scaleX(1); animation-timing-function: cubic-bezier(0.37, 0, 0.63, 0.3); }
-    50% { transform: scaleX(0); animation-timing-function: cubic-bezier(0.37, 0.7, 0.63, 1); }
-    100% { transform: scaleX(1); }
-  }
   @keyframes gfx-light {
     from { stroke-dashoffset: 12; }
     to { stroke-dashoffset: -100; }
@@ -85,20 +92,6 @@
   @keyframes gfx-face {
     0%, 100% { opacity: 0.05; }
     50% { opacity: 0.16; }
-  }
-  /* resting slightly offset; a short jitter every 6s */
-  @keyframes gfx-glitch-a {
-    0% { transform: translateX(1.5px); }
-    88% { transform: translateX(-5px); }
-    90% { transform: translateX(4px); }
-    92% { transform: translateX(-2px); }
-    94%, 100% { transform: translateX(1.5px); }
-  }
-  @keyframes gfx-glitch-b {
-    0% { transform: translateX(-1px); opacity: 0.7; }
-    89% { transform: translateX(6px); opacity: 1; }
-    91% { transform: translateX(-3px); }
-    93%, 100% { transform: translateX(-1px); opacity: 0.7; }
   }
 
   /* hero name: a white light streak sweeps through the letters, then rests */
@@ -231,8 +224,8 @@
   }
   body::before {
     background-image:
-      linear-gradient(to right, rgb(17 18 22 / 0.035) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(17 18 22 / 0.035) 1px, transparent 1px);
+      linear-gradient(to right, rgb(52 74 112 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(52 74 112 / 0.06) 1px, transparent 1px);
     background-size: 72px 72px;
     mask-image: radial-gradient(ellipse 120% 90% at 50% 40%, black 30%, transparent 100%);
   }
@@ -338,6 +331,16 @@
     background-position: 80% 0;
   }
   /* ── 3D accent objects: materials ── */
+  /* section-only fine grain (neutral, very light) */
+  .grain {
+    opacity: 0.09;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.33 0 0 0 0 0.4 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
+  /* white fills inside line graphics follow the surface they sit on */
+  .gfx-fill {
+    fill: var(--gfx-fill, #ffffff);
+  }
   .deco-paused,
   .deco-paused * {
     animation-play-state: paused !important;
