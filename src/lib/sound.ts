@@ -30,6 +30,8 @@ type Engine = {
   pad: AudioNode;
   pluckBus: AudioNode;
   sfx: GainNode;
+  /** Bypasses the master fade, so the toggle's own sound is heard while music fades in/out. */
+  ui: GainNode;
 };
 
 let engine: Engine | null = null;
@@ -119,7 +121,11 @@ function build(): Engine {
   sfx.gain.value = SFX_LEVEL;
   sfx.connect(master);
 
-  return { ctx, master, pad: lp, pluckBus, sfx };
+  const ui = ctx.createGain();
+  ui.gain.value = SFX_LEVEL;
+  ui.connect(ctx.destination);
+
+  return { ctx, master, pad: lp, pluckBus, sfx, ui };
 }
 
 function playChord(e: Engine, notes: number[], t0: number, dur: number) {
@@ -216,6 +222,47 @@ function chime(e: Engine) {
   });
 }
 
+/**
+ * Sound-toggle feedback: a crisp switch click followed by a short two-note
+ * sweep (rising = on, falling = off). Played on the `ui` bus.
+ */
+function switchSfx(e: Engine, turnOn: boolean) {
+  const { ctx, ui } = e;
+  const t = ctx.currentTime + 0.01;
+
+  // mechanical "tick" of the switch: a very short filtered noise burst
+  const len = Math.floor(ctx.sampleRate * 0.03);
+  const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 3;
+  const n = ctx.createBufferSource();
+  n.buffer = buf;
+  const hp = ctx.createBiquadFilter();
+  hp.type = 'highpass';
+  hp.frequency.value = 2400;
+  const ng = ctx.createGain();
+  ng.gain.value = 0.5;
+  n.connect(hp).connect(ng).connect(ui);
+  n.start(t);
+
+  // two-note sweep
+  const notes = turnOn ? [69, 81] : [81, 64];
+  notes.forEach((m, i) => {
+    const s = t + 0.03 + i * 0.075;
+    const o = ctx.createOscillator();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(mtof(m), s);
+    o.frequency.exponentialRampToValueAtTime(mtof(m + (turnOn ? 2 : -2)), s + 0.12);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, s);
+    g.gain.linearRampToValueAtTime(0.11, s + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.0001, s + (turnOn ? 0.32 : 0.24));
+    o.connect(g).connect(ui);
+    o.start(s);
+    o.stop(s + 0.36);
+  });
+}
+
 export const sound = {
   isOn: () => on,
 
@@ -269,6 +316,22 @@ export const sound = {
         if (!on) e.ctx.suspend();
       }, 700);
     }
+  },
+
+  /** Used by the nav toggle: switch sound first, then turn music on/off. */
+  async toggle() {
+    const next = !on;
+    engine ??= build();
+    const e = engine;
+    if (next) {
+      try {
+        await e.ctx.resume();
+      } catch {
+        /* blocked */
+      }
+    }
+    switchSfx(e, next);
+    await this.setOn(next);
   },
 
   /** Tiny rising blip for hovering interactive elements. */

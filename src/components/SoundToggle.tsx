@@ -14,7 +14,7 @@ export function SoundToggle({ className = '' }: { className?: string }) {
     <button
       type="button"
       data-sound-toggle
-      onClick={() => sound.setOn(!sound.isOn())}
+      onClick={() => sound.toggle()}
       aria-pressed={on}
       aria-label={on ? 'Turn sound off' : 'Turn sound on'}
       title={on ? 'Sound on' : 'Sound off'}

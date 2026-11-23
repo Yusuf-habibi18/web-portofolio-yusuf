@@ -40,6 +40,13 @@
   --animate-beam: beam-sweep 7s cubic-bezier(0.45, 0, 0.25, 1) infinite;
   --animate-line-pulse: line-pulse 6s linear infinite;
   --animate-node-breathe: node-breathe 11s ease-in-out infinite;
+  --animate-name-shine: name-shine 5.5s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+
+  /* hero name: a white light streak sweeps through the letters, then rests */
+  @keyframes name-shine {
+    0% { background-position: 80% 0; }
+    30%, 100% { background-position: 20% 0; }
+  }
 
   /* grid nodes: a slow swell, never a blink */
   @keyframes node-breathe {
@@ -85,8 +92,7 @@
     6% { clip-path: inset(80% 0 4% 0); transform: translateX(0.03em); }
     8% { clip-path: inset(4% 0 86% 0); transform: translateX(-0.04em); }
     10% { clip-path: inset(46% 0 36% 0); transform: translateX(0.02em); }
-    /* settle on the signature look (same as .glitch-a-rest) */
-    12%, 100% { clip-path: inset(10% 0 72% 0); transform: translateX(-0.035em); }
+    12%, 100% { clip-path: inset(0 0 100% 0); transform: none; }
   }
   @keyframes glitch-b {
     0% { clip-path: inset(64% 0 22% 0); transform: translateX(0.03em); }
@@ -95,8 +101,7 @@
     7% { clip-path: inset(38% 0 48% 0); transform: translateX(-0.03em); }
     9% { clip-path: inset(70% 0 14% 0); transform: translateX(0.04em); }
     11% { clip-path: inset(14% 0 78% 0); transform: translateX(-0.02em); }
-    /* settle on the signature look (same as .glitch-b-rest) */
-    12%, 100% { clip-path: inset(64% 0 22% 0); transform: translateX(0.03em); }
+    12%, 100% { clip-path: inset(0 0 100% 0); transform: none; }
   }
   @keyframes glitch-base {
     0% { transform: translateX(0.012em); }
@@ -225,16 +230,6 @@
     text-transform: uppercase;
     font-variant-numeric: tabular-nums;
   }
-  /* "YUSUF" signature glitch, frozen: a shifted electric-blue band on top and a torn
-     slice near the bottom. The burst animation always settles back onto this. */
-  .glitch-a-rest {
-    clip-path: inset(10% 0 72% 0);
-    transform: translateX(-0.035em);
-  }
-  .glitch-b-rest {
-    clip-path: inset(64% 0 22% 0);
-    transform: translateX(0.03em);
-  }
   /* Rim light that follows a cut-out's silhouette: a crisp signal-blue edge + a soft electric-blue halo */
   .rim-light {
     filter: drop-shadow(0 0 1px rgb(117 167 255 / 0.55)) drop-shadow(0 0 22px rgb(36 87 255 / 0.22));
@@ -257,6 +252,31 @@
     .group\/card:hover > .card-spotlight {
       opacity: 1;
     }
+  }
+  /* "YUSUF": white shine clipped to the letter shapes (never outside them) */
+  .name-gloss,
+  .name-shine {
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  .name-gloss {
+    background-image: linear-gradient(to bottom, rgb(255 255 255 / 0.2), rgb(255 255 255 / 0.05) 38%, transparent 55%);
+  }
+  .name-shine {
+    background-image: linear-gradient(
+      105deg,
+      transparent 47.2%,
+      rgb(255 255 255 / 0.1) 48.6%,
+      rgb(255 255 255 / 0.55) 49.6%,
+      rgb(255 255 255 / 0.95) 50%,
+      rgb(255 255 255 / 0.55) 50.4%,
+      rgb(255 255 255 / 0.1) 51.4%,
+      transparent 52.8%
+    );
+    background-size: 400% 100%;
+    background-repeat: no-repeat;
+    background-position: 80% 0;
   }
   /* Faint blue scanlines, used on hover over media */
   .scanlines {

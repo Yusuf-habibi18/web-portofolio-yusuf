@@ -204,14 +204,22 @@ export function Hero({ ready }: { ready: boolean }) {
       <div className="relative z-0 mt-5 lg:static lg:mt-0">
         <h1 className={`${nameClass} text-ink`}>
           <span className="sr-only">{profile.fullName}</span>
-          <span aria-hidden className={`inline-block ${glitch ? 'animate-glitch-base' : ''}`}>
+          <span aria-hidden className={`relative inline-block ${glitch ? 'animate-glitch-base' : ''}`}>
             {letters()}
           </span>
-          {/* signature glitch look: frozen at rest, with a burst every 5s (static for reduced motion) */}
-          {(glitch || (reduce && ready)) && (
+          {/* white shine inside the black letters: a glossy top sheen + a light streak that sweeps across */}
+          <span
+            aria-hidden
+            className={`pointer-events-none absolute inset-0 transition-opacity duration-[1600ms] ${ready ? 'opacity-100' : 'opacity-0'}`}
+          >
+            {ghost('name-gloss')}
+            {ghost('name-shine animate-name-shine')}
+          </span>
+          {/* cyber glitch burst every 5s; at rest the name is clean black */}
+          {glitch && (
             <>
-              {ghost(`text-royal glitch-a-rest ${reduce ? '' : 'animate-glitch-a'}`)}
-              {ghost(`text-paper glitch-b-rest ${reduce ? '' : 'animate-glitch-b'}`)}
+              {ghost('text-royal animate-glitch-a')}
+              {ghost('text-paper animate-glitch-b')}
             </>
           )}
         </h1>
