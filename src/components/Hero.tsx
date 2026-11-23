@@ -6,7 +6,7 @@ import {
   useSpring,
   useTransform,
 } from 'motion/react';
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import type { MouseEvent } from 'react';
 import portrait from '../assets/portrait.webp';
 import portraitSm from '../assets/portrait-sm.webp';
@@ -19,6 +19,9 @@ import { Corners, Crosshair } from './ui/Hud';
 import { GlowOrb } from './ui/Light';
 import { ScrambleText } from './ui/ScrambleText';
 import { ArrowDown, MapPin } from './ui/Icons';
+
+// The 3D portrait (WebGL) loads separately, after the hero is on screen.
+const Portrait3D = lazy(() => import('./Portrait3D'));
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 /** Phones: the two hero buttons sit side by side, each half the width. */
@@ -58,6 +61,25 @@ export function Hero({ ready }: { ready: boolean }) {
 
   // Tap / click the portrait to replay the scan.
   const [scanKey, setScanKey] = useState(0);
+
+  // 3D portrait: mounted once the entrance animation has finished, then it replaces the flat photo.
+  const [imgEl, setImgEl] = useState<HTMLImageElement | null>(null);
+  const focusRef = useRef<HTMLSpanElement>(null);
+  const [want3D, setWant3D] = useState(false);
+  const [is3D, setIs3D] = useState(false);
+  const [no3D, setNo3D] = useState(false);
+  useEffect(() => {
+    if (!ready || reduce || !imgEl) return;
+    const go3D = () => setWant3D(true);
+    let t = 0;
+    const start = () => (t = window.setTimeout(go3D, 1900));
+    if (imgEl.complete) start();
+    else imgEl.addEventListener('load', start, { once: true });
+    return () => {
+      window.clearTimeout(t);
+      imgEl.removeEventListener('load', start);
+    };
+  }, [ready, reduce, imgEl]);
 
   // Phones/tablets have no cursor, so the laptop's mouse parallax is replaced by:
   //  - auto-parallax: a slow left-right sway + tilt, always on;
@@ -257,15 +279,16 @@ export function Hero({ ready }: { ready: boolean }) {
 
       {/* Portrait */}
       <motion.div
-        style={{ y: portraitY, x: portraitX, rotate: portraitTilt }}
+        style={{ y: portraitY, x: is3D ? 0 : portraitX, rotate: is3D ? 0 : portraitTilt }}
         className="absolute bottom-0 left-1/2 z-10 h-full w-auto origin-bottom -translate-x-1/2 lg:h-[88%]"
         onClick={() => setScanKey((k) => k + 1)}
       >
         {/* gentle float on phones/tablets so the portrait never sits still */}
         <div className={`relative h-full ${reduce ? '' : 'max-lg:animate-float'}`}>
         {/* rim light: a thin signal-blue edge + soft halo following the silhouette */}
-        <div className="rim-light h-full">
+        <div className={`rim-light h-full transition-opacity duration-500 ${is3D ? 'opacity-0' : ''}`}>
         <motion.img
+          ref={setImgEl}
           src={portrait}
           srcSet={`${portraitSm} 640w, ${portrait} 1000w, ${portraitLg} 1400w`}
           sizes="(min-width: 1024px) 520px, 70vw"
@@ -280,6 +303,25 @@ export function Hero({ ready }: { ready: boolean }) {
           transition={{ duration: 1.4, ease: EASE, delay: 0.25 }}
         />
         </div>
+
+        {/* the same photo as a 3D relief: follows the pointer / sway, drag to rotate */}
+        {want3D && imgEl && !no3D && (
+          <Suspense fallback={null}>
+            <div className={`transition-opacity duration-500 ${is3D ? 'opacity-100' : 'opacity-0'}`}>
+              <Portrait3D
+                img={imgEl}
+                sx={sx}
+                sy={sy}
+                focus={focusRef.current}
+                onReady={() => setIs3D(true)}
+                onFail={() => {
+                  setIs3D(false);
+                  setNo3D(true);
+                }}
+              />
+            </div>
+          </Suspense>
+        )}
 
         {/* One scan pass over the portrait as the site opens */}
         {!reduce && (
@@ -313,7 +355,8 @@ export function Hero({ ready }: { ready: boolean }) {
 
         {/* Focus point locked on the blue rose: the accent colour comes from here */}
         <motion.span
-          className="pointer-events-none absolute top-[32.3%] left-[45.9%] aspect-square w-[13%] -translate-x-1/2 -translate-y-1/2 text-royal"
+          ref={focusRef}
+          className="pointer-events-none absolute top-[32.3%] left-[45.9%] z-10 aspect-square w-[13%] -translate-x-1/2 -translate-y-1/2 text-royal"
           initial={{ opacity: 0, scale: 1.8 }}
           animate={ready ? { opacity: 1, scale: 1 } : undefined}
           transition={{ duration: 0.7, ease: EASE, delay: 1.6 }}
