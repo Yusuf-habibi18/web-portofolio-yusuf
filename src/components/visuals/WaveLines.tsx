@@ -3,8 +3,16 @@ import type { RefObject } from 'react';
 
 const W = 1440;
 const H = 320;
-const LINES = 28;
-const STEP = 24;
+
+/**
+ * Detail + frame budget. Phones/tablets get fewer lines and points and ~30fps;
+ * desktops ~40fps. The motion is slow, so the lower rate is invisible but the
+ * per-frame work (rebuilding every path) drops a lot.
+ */
+const COARSE = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+const LINES = COARSE ? 18 : 28;
+const STEP = COARSE ? 36 : 24;
+const FRAME_MS = COARSE ? 1000 / 30 : 1000 / 40;
 const ACCENT = Math.round(LINES * 0.62);
 
 /** Pointer position shared with the parent, normalised 0..1 over the viewport. */
@@ -57,7 +65,11 @@ export function WaveLines({
     let px = 0.5;
     let py = 0.5;
     const start = performance.now();
+    let last = 0;
     const tick = (now: number) => {
+      raf = requestAnimationFrame(tick);
+      if (now - last < FRAME_MS) return;
+      last = now;
       const t = (now - start) / 1000;
       const ptr = pointer?.current;
       // ease pointer influence in/out so the lines never snap
@@ -74,7 +86,6 @@ export function WaveLines({
         packet.current.style.left = `${(x / W) * 100}%`;
         packet.current.style.top = `${(y / H) * 100}%`;
       }
-      raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
