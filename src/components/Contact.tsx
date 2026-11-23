@@ -1,9 +1,9 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import type { MouseEvent } from 'react';
-import { contact, profile } from '../data/content';
+import { contact, cv, profile } from '../data/content';
 import { scrollToId } from '../lib/scroll';
-import { ArrowUp, ArrowUpRight, Chat, Check, Copy, Github, Linkedin } from './ui/Icons';
+import { ArrowUp, ArrowUpRight, Chat, Check, Copy, FileText, Github, Linkedin } from './ui/Icons';
 import { Magnetic } from './ui/Magnetic';
 import { Reveal, WordsReveal } from './ui/Reveal';
 import { ScrambleText } from './ui/ScrambleText';
@@ -30,6 +30,7 @@ export function Contact() {
     { label: 'WhatsApp', value: contact.phone.label, href: contact.whatsapp.href, icon: <Chat size={22} /> },
     { label: 'GitHub', value: contact.github.label, href: contact.github.href, icon: <Github size={22} /> },
     { label: 'LinkedIn', value: contact.linkedin.label, href: contact.linkedin.href, icon: <Linkedin size={22} /> },
+    { label: 'Curriculum Vitae', value: 'PDF · English', href: cv.en.href, icon: <FileText size={22} /> },
   ];
 
   return (
@@ -94,7 +95,7 @@ export function Contact() {
                 <Reveal as="li" key={s.label} delay={0.15 + i * 0.08}>
                   <a
                     href={s.href}
-                    {...(s.href.startsWith('http') ? { target: '_blank', rel: 'noreferrer' } : {})}
+                    {...(s.href.startsWith('http') ? { target: '_blank', rel: 'noreferrer' } : s.href.endsWith('.pdf') ? { download: '' } : {})}
                     className="group flex items-center justify-between gap-4 border-b border-paper/20 py-6"
                   >
                     <span className="flex items-center gap-4">

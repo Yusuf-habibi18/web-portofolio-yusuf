@@ -8,6 +8,8 @@ type Props = {
   variant?: 'primary' | 'outline' | 'light';
   onClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
   external?: boolean;
+  /** Download the target instead of navigating (e.g. a PDF). */
+  download?: boolean;
   icon?: ReactNode;
   className?: string;
 };
@@ -19,13 +21,14 @@ const styles = {
 };
 
 /** Pill link whose arrow slides out and back in on hover. */
-export function Button({ href, children, variant = 'primary', onClick, external, icon, className = '' }: Props) {
+export function Button({ href, children, variant = 'primary', onClick, external, download, icon, className = '' }: Props) {
   return (
     <Magnetic>
     <a
       href={href}
       onClick={onClick}
       {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
+      {...(download ? { download: '' } : {})}
       className={`group relative inline-flex h-12 items-center gap-3 overflow-hidden rounded-full pr-2 pl-6 text-[0.9375rem] font-medium transition-colors duration-300 ${styles[variant]} ${className}`}
     >
       {variant === 'primary' && (

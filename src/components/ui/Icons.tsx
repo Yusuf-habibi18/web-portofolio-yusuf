@@ -71,6 +71,12 @@ export const Chat = (p: IconProps) => (
     <path d="M9 10h6M9 13.5h4" />
   </svg>
 );
+export const FileText = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z" />
+    <path d="M14 3v5h5M9 13h6M9 17h4" />
+  </svg>
+);
 export const MapPin = (p: IconProps) => (
   <svg {...base(p)}>
     <path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11z" />

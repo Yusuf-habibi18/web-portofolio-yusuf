@@ -1,10 +1,59 @@
 import { animate, useInView, useReducedMotion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
-import { about } from '../data/content';
+import { about, contact, cv, profile } from '../data/content';
 import { AboutIntro } from './AboutIntro';
-import { Crosshair } from './ui/Hud';
+import { Corners, Crosshair } from './ui/Hud';
+import { ArrowDown, ArrowUpRight } from './ui/Icons';
 import { Reveal } from './ui/Reveal';
 import { ScrambleText } from './ui/ScrambleText';
+
+/** Quick facts for recruiters: everything needed to shortlist, plus the CV and code links. */
+function AtAGlance() {
+  const facts = [
+    { k: 'Program', v: 'S1 Information Systems, ITPLN' },
+    { k: 'Graduation', v: '2028 (expected)' },
+    { k: 'Based in', v: profile.location },
+    { k: 'Looking for', v: 'Internship in web development or data engineering' },
+  ];
+  const links = [
+    { label: 'CV · EN', href: cv.en.href, download: true },
+    { label: 'CV · ID', href: cv.id.href, download: true },
+    { label: 'GitHub', href: contact.github.href },
+    { label: 'LinkedIn', href: contact.linkedin.href },
+  ];
+  return (
+    <Reveal className="relative mt-14 md:mt-20">
+      <section aria-labelledby="glance-title" className="relative rounded-2xl bg-surface/70 p-5 ring-1 ring-ink/10 backdrop-blur-sm md:p-8">
+        <Corners size={12} inset="-inset-1.5" className="text-royal/60" />
+        <h3 id="glance-title" className="mono flex items-center gap-2 text-muted">
+          <span className="text-royal-ink">//</span> At a glance
+        </h3>
+        <dl className="mt-5 grid gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
+          {facts.map((f) => (
+            <div key={f.k} className="border-t border-ink/10 pt-3">
+              <dt className="mono text-[0.625rem] text-muted">{f.k}</dt>
+              <dd className="mt-1.5 font-display text-[1.0625rem] leading-snug font-medium tracking-[-0.01em]">{f.v}</dd>
+            </div>
+          ))}
+        </dl>
+        <ul className="mt-7 flex flex-wrap gap-2">
+          {links.map((l) => (
+            <li key={l.label}>
+              <a
+                href={l.href}
+                {...(l.download ? { download: '' } : { target: '_blank', rel: 'noreferrer' })}
+                className="mono inline-flex h-10 items-center gap-2 rounded-full border border-ink/25 px-4 text-ink transition-colors duration-300 hover:border-royal hover:bg-royal hover:text-surface"
+              >
+                {l.label}
+                {l.download ? <ArrowDown size={14} /> : <ArrowUpRight size={14} />}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </Reveal>
+  );
+}
 
 function CountUp({ value, decimals }: { value: number; decimals: number }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -46,6 +95,7 @@ export function About() {
 
         <div className="md:col-span-9">
           <AboutIntro />
+          <AtAGlance />
 
           <div className="mt-16 grid gap-8 md:mt-24 md:grid-cols-2 md:gap-12">
             {about.paragraphs.map((p, i) => (

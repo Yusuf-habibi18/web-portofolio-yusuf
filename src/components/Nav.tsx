@@ -1,11 +1,10 @@
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/react';
 import { useEffect, useState } from 'react';
 import type { MouseEvent } from 'react';
-import { contact, navLinks, profile } from '../data/content';
+import { contact, cv, navLinks, profile } from '../data/content';
 import { useActiveSection } from '../hooks/useActiveSection';
 import { lockScroll, scrollToId } from '../lib/scroll';
 import { ArrowUpRight } from './ui/Icons';
-import { SoundToggle } from './SoundToggle';
 import { ScrambleText } from './ui/ScrambleText';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -92,7 +91,14 @@ export function Nav({ ready }: { ready: boolean }) {
           </ul>
 
           <div className="flex items-center gap-2">
-            <SoundToggle />
+            <a
+              href={cv.en.href}
+              download
+              className="hidden h-12 items-center gap-1.5 rounded-full bg-surface/60 px-4 font-mono text-xs font-medium tracking-[0.08em] text-ink backdrop-blur-md transition-colors duration-300 hover:bg-ink hover:text-paper md:inline-flex"
+              aria-label="Download CV (PDF)"
+            >
+              CV <span aria-hidden>↓</span>
+            </a>
             <a
               href="#contact"
               onClick={go('contact')}
@@ -172,6 +178,17 @@ export function Nav({ ready }: { ready: boolean }) {
                 </a>
                 <a href={contact.whatsapp.href} target="_blank" rel="noreferrer" className="text-paper">
                   WhatsApp ↗
+                </a>
+              </span>
+              <span className="flex flex-wrap gap-x-4">
+                <a href={cv.en.href} download className="text-paper">
+                  CV (EN) ↓
+                </a>
+                <a href={cv.id.href} download className="text-paper">
+                  CV (ID) ↓
+                </a>
+                <a href={contact.github.href} target="_blank" rel="noreferrer" className="text-paper">
+                  GitHub ↗
                 </a>
               </span>
               <span>{profile.location}</span>
