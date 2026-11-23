@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { about, contact, cv, profile } from '../data/content';
 import { AboutIntro } from './AboutIntro';
 import { Deco } from './deco/Deco';
-import { GlassCube } from './deco/Objects';
+import { OrbitalRings, TechCoords } from './deco/Graphics';
 import { Corners, Crosshair } from './ui/Hud';
 import { GlowOrb } from './ui/Light';
 import { ArrowDown, ArrowUpRight } from './ui/Icons';
@@ -83,16 +83,12 @@ export function About() {
       <GlowOrb className="top-[18%] left-[88%] size-[620px]" strength={0.2} />
       <GlowOrb className="top-[70%] left-[8%] size-[520px]" strength={0.12} delay={4} />
       {/* Same editorial grid as every other section: label left (3 cols), content right (9 cols) */}
-      {/* glass cube: the empty space right of the intro (desktop) / end of the label row (phones) */}
-      <Deco className="absolute top-[400px] right-[9%] hidden xl:block" delay={0.4} depth={14} float={12} floatDuration={8.5}>
-        <GlassCube s={104} />
-      </Deco>
-      <Deco className="absolute top-[88px] right-5 md:top-[124px] xl:hidden" delay={0.3} depth={0} float={8}>
-        <GlassCube s={46} />
-      </Deco>
       <div className="wrap grid gap-10 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-3">
-          <Reveal className="md:sticky md:top-28">
+          <Reveal className="relative md:sticky md:top-28">
+            <Deco className="absolute -top-6 right-0 md:hidden" delay={0.3} depth={0} float={8}>
+              <OrbitalRings s={60} />
+            </Deco>
             <p id="about-title" className="eyebrow flex items-center gap-3 text-muted">
               <span className="mono text-royal-ink">[01]</span>
               <span className="h-px w-8 bg-gradient-to-r from-royal to-royal/0" aria-hidden />
@@ -102,6 +98,22 @@ export function About() {
               <Crosshair size={9} />
               <ScrambleText text="Sec_01 / 05" trigger="view" delay={350} duration={600} pendingClassName="text-royal/50" />
             </p>
+            {/* the label column is otherwise empty: orbital rings + a coordinates read-out */}
+            <div className="mt-14 hidden flex-col gap-8 md:flex">
+              <Deco delay={0.3} depth={12} float={10} floatDuration={9}>
+                <OrbitalRings s={150} />
+              </Deco>
+              <Deco delay={0.55} depth={6} float={0}>
+                <TechCoords
+                  lines={[
+                    ['LAT', '06°12′08″ S'],
+                    ['LNG', '106°50′14″ E'],
+                    ['LOC', 'JAKARTA · ID'],
+                    ['REF', 'ITPLN / SI'],
+                  ]}
+                />
+              </Deco>
+            </div>
           </Reveal>
         </div>
 

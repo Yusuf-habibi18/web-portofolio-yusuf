@@ -20,7 +20,7 @@ import { GlowOrb } from './ui/Light';
 import { ScrambleText } from './ui/ScrambleText';
 import { ArrowDown, MapPin } from './ui/Icons';
 import { Deco } from './deco/Deco';
-import { HoloOrb } from './deco/Objects';
+import { GlitchGeometry, WireSphere } from './deco/Graphics';
 
 // The 3D portrait (WebGL) loads separately, after the hero is on screen.
 const Portrait3D = lazy(() => import('./Portrait3D'));
@@ -223,9 +223,12 @@ export function Hero({ ready }: { ready: boolean }) {
         ))}
       </div>
 
-      {/* holographic orb: the quiet space right of the name, above the scroll badge (desktop only) */}
-      <Deco className="absolute top-[55%] right-[12%] z-0 hidden lg:block" delay={1.6} depth={16} float={12} floatDuration={8}>
-        <HoloOrb s={104} />
+      {/* line-work accents in the quiet spaces around the name (desktop only) */}
+      <Deco className="absolute top-[54%] right-[11%] z-0 hidden lg:block" delay={1.6} depth={14} float={10} floatDuration={9}>
+        <WireSphere s={118} />
+      </Deco>
+      <Deco className="absolute top-[56%] left-[clamp(1rem,4vw,3.5rem)] z-0 hidden lg:block" delay={1.9} depth={10} float={8} floatDuration={8}>
+        <GlitchGeometry s={78} />
       </Deco>
 
       {/* Top meta row */}

@@ -6,7 +6,7 @@ import { ProjectCard } from './ProjectCard';
 import { Reveal } from './ui/Reveal';
 import { SectionHeading } from './ui/SectionHeading';
 import { Deco } from './deco/Deco';
-import { CyberRing } from './deco/Objects';
+import { TechCoords } from './deco/Graphics';
 
 type Filter = 'All' | Project['category'];
 const FILTERS: Filter[] = ['All', 'Web Development', 'Data Engineering'];
@@ -25,13 +25,14 @@ export function Projects() {
           title="Things I have built with code and data."
           accent={['built']}
           deco={
-            <Deco delay={0.3} depth={12} float={10} floatDuration={8}>
-              <CyberRing s={74} />
-            </Deco>
-          }
-          decoMobile={
-            <Deco delay={0.3} depth={0} float={8}>
-              <CyberRing s={42} />
+            <Deco delay={0.3} depth={6} float={0}>
+              <TechCoords
+                lines={[
+                  ['IDX', '05 ENTRIES'],
+                  ['CAT', 'WEB · DATA'],
+                  ['GRD', 'X 0384 · Y 1207'],
+                ]}
+              />
             </Deco>
           }
         />
