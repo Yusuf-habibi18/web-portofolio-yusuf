@@ -55,17 +55,34 @@ export function Hero({ ready }: { ready: boolean }) {
   // Tap / click the portrait to replay the scan.
   const [scanKey, setScanKey] = useState(0);
 
-  // Phones: the portrait follows the device tilt (Android; iOS needs a permission prompt, so it just floats).
+  // Phones/tablets have no cursor, so the laptop's mouse parallax is replaced by:
+  //  - auto-parallax: a slow left-right sway + tilt, always on;
+  //  - device tilt (gyroscope, Android) which takes over while the phone is moved.
   useEffect(() => {
     if (reduce || window.matchMedia('(pointer: fine)').matches) return;
     const clamp = (v: number) => Math.max(-1, Math.min(1, v));
+    let lastTilt = -Infinity;
     const onTilt = (e: DeviceOrientationEvent) => {
       if (e.gamma == null || e.beta == null) return;
+      lastTilt = performance.now();
       px.set(clamp(e.gamma / 25));
       py.set(clamp((e.beta - 50) / 25) * 0.5);
     };
+    let raf = 0;
+    const t0 = performance.now();
+    const sway = (now: number) => {
+      raf = requestAnimationFrame(sway);
+      if (now - lastTilt < 1200) return; // gyroscope is driving
+      const t = (now - t0) / 1000;
+      px.set(Math.sin(t * 0.7) * 0.85);
+      py.set(Math.sin(t * 0.5 + 1) * 0.35);
+    };
+    raf = requestAnimationFrame(sway);
     window.addEventListener('deviceorientation', onTilt);
-    return () => window.removeEventListener('deviceorientation', onTilt);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('deviceorientation', onTilt);
+    };
   }, [reduce, px, py]);
 
   const fine = useRef(false);
