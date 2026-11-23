@@ -11,7 +11,7 @@ import type { MouseEvent } from 'react';
 import portrait from '../assets/portrait.webp';
 import portraitSm from '../assets/portrait-sm.webp';
 import portraitLg from '../assets/portrait-lg.webp';
-import { profile } from '../data/content';
+import { cv, profile } from '../data/content';
 import { useJakartaTime } from '../hooks/useClock';
 import { scrollToId } from '../lib/scroll';
 import { Button } from './ui/Button';
@@ -51,6 +51,22 @@ export function Hero({ ready }: { ready: boolean }) {
     const t = window.setTimeout(() => setGlitch(true), 1500);
     return () => window.clearTimeout(t);
   }, [ready, reduce]);
+
+  // Tap / click the portrait to replay the scan.
+  const [scanKey, setScanKey] = useState(0);
+
+  // Phones: the portrait follows the device tilt (Android; iOS needs a permission prompt, so it just floats).
+  useEffect(() => {
+    if (reduce || window.matchMedia('(pointer: fine)').matches) return;
+    const clamp = (v: number) => Math.max(-1, Math.min(1, v));
+    const onTilt = (e: DeviceOrientationEvent) => {
+      if (e.gamma == null || e.beta == null) return;
+      px.set(clamp(e.gamma / 25));
+      py.set(clamp((e.beta - 50) / 25) * 0.5);
+    };
+    window.addEventListener('deviceorientation', onTilt);
+    return () => window.removeEventListener('deviceorientation', onTilt);
+  }, [reduce, px, py]);
 
   const fine = useRef(false);
   useEffect(() => {
@@ -177,7 +193,10 @@ export function Hero({ ready }: { ready: boolean }) {
       <motion.div
         style={{ y: portraitY, x: portraitX, rotate: portraitTilt }}
         className="relative z-10 mx-auto -mt-[17vw] w-[min(74vw,430px)] origin-bottom lg:absolute lg:bottom-0 lg:left-1/2 lg:mt-0 lg:h-[88%] lg:w-auto lg:-translate-x-1/2"
+        onClick={() => setScanKey((k) => k + 1)}
       >
+        {/* gentle float on phones/tablets so the portrait never sits still */}
+        <div className={`relative lg:h-full ${reduce ? '' : 'max-lg:animate-float'}`}>
         <motion.img
           src={portrait}
           srcSet={`${portraitSm} 640w, ${portrait} 1000w, ${portraitLg} 1400w`}
@@ -196,28 +215,31 @@ export function Hero({ ready }: { ready: boolean }) {
         {/* One scan pass over the portrait as the site opens */}
         {!reduce && (
           <motion.span
+            key={scanKey}
             className="pointer-events-none absolute -inset-x-[6%] h-[2px] bg-royal shadow-[0_0_14px_2px_rgb(36_87_255/0.45)]"
             initial={{ top: '0%', opacity: 0 }}
             animate={ready ? { top: ['0%', '100%'], opacity: [0, 1, 1, 0] } : undefined}
             transition={{
-              top: { duration: 1.4, ease: [0.45, 0, 0.25, 1], delay: 0.35 },
-              opacity: { duration: 1.4, times: [0, 0.06, 0.9, 1], delay: 0.35 },
+              top: { duration: 1.4, ease: [0.45, 0, 0.25, 1], delay: scanKey ? 0 : 0.35 },
+              opacity: { duration: 1.4, times: [0, 0.06, 0.9, 1], delay: scanKey ? 0 : 0.35 },
             }}
             aria-hidden
           />
         )}
 
-        {/* Viewfinder frame (desktop) */}
+        {/* Viewfinder frame (labels on desktop only) */}
         <motion.span
-          className="pointer-events-none absolute -inset-x-[7%] top-[2%] bottom-[9%] hidden text-ink/35 lg:block"
+          className="pointer-events-none absolute -inset-x-[7%] top-[2%] bottom-[9%] text-ink/35"
           initial={{ opacity: 0, scale: 1.04 }}
           animate={ready ? { opacity: 1, scale: 1 } : undefined}
           transition={{ duration: 1.2, ease: EASE, delay: 1.1 }}
           aria-hidden
         >
           <Corners size={22} />
-          <span className="mono absolute -top-6 left-0 text-[0.625rem] text-muted">Fig.01 — Portrait</span>
-          <span className="mono absolute right-0 -bottom-6 text-[0.625rem] text-muted">Subj. {profile.fullName}</span>
+          <span className="mono absolute -top-6 left-0 hidden text-[0.625rem] text-muted lg:block">Fig.01 — Portrait</span>
+          <span className="mono absolute right-0 -bottom-6 hidden text-[0.625rem] text-muted lg:block">
+            Subj. {profile.fullName}
+          </span>
         </motion.span>
 
         {/* Focus point locked on the blue rose: the accent colour comes from here */}
@@ -230,6 +252,7 @@ export function Hero({ ready }: { ready: boolean }) {
         >
           <Corners size={7} thickness={1.5} />
         </motion.span>
+        </div>
       </motion.div>
 
       {/* Bottom content */}
@@ -248,8 +271,8 @@ export function Hero({ ready }: { ready: boolean }) {
             <Button href="#projects" onClick={go('projects')} icon={<ArrowDown size={18} />}>
               Explore Projects
             </Button>
-            <Button href="#contact" onClick={go('contact')} variant="outline">
-              Contact Me
+            <Button href={cv.en.href} download variant="outline" icon={<ArrowDown size={18} />}>
+              Download CV
             </Button>
           </div>
         </motion.div>
