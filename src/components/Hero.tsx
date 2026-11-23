@@ -21,11 +21,14 @@ import { ScrambleText } from './ui/ScrambleText';
 import { ArrowDown, MapPin } from './ui/Icons';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+/** Phones: the two hero buttons sit side by side, each half the width. */
+const phoneBtn =
+  'whitespace-nowrap max-sm:w-full max-sm:justify-between max-sm:gap-2 max-sm:pl-4 max-sm:text-sm max-[380px]:gap-1 max-[380px]:pr-1.5 max-[380px]:pl-3.5 max-[380px]:text-[0.8125rem]';
 const NAME = profile.firstName.toUpperCase().split('');
 
 const nameClass =
   'pointer-events-none relative select-none whitespace-nowrap text-center font-display font-bold leading-[0.8] tracking-[-0.065em] ' +
-  'text-[29vw] lg:absolute lg:inset-x-0 lg:top-[21%] lg:text-[min(27vw,50svh)]';
+  'text-[30.5vw] lg:absolute lg:inset-x-0 lg:top-[21%] lg:text-[min(27vw,50svh)]';
 
 export function Hero({ ready }: { ready: boolean }) {
   const ref = useRef<HTMLElement>(null);
@@ -114,6 +117,31 @@ export function Hero({ ready }: { ready: boolean }) {
     </span>
   );
 
+  /** Rotating "scroll to explore" badge (laptop: bottom-right; phones: bottom-right of the portrait frame). */
+  const badge = (id: string, size: string, inner: string, arrow: number) => (
+    <a
+      href="#about"
+      onClick={go('about')}
+      className={`group relative grid place-items-center rounded-full ${size}`}
+      aria-label="Scroll to About section"
+    >
+      <svg viewBox="0 0 100 100" className="absolute inset-0 size-full animate-[spin_16s_linear_infinite]" aria-hidden>
+        <defs>
+          <path id={id} d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" />
+        </defs>
+        {/* outer orbit with a small blue marker travelling round */}
+        <circle cx="50" cy="50" r="47" fill="none" className="stroke-royal/25" strokeWidth="0.6" />
+        <circle cx="50" cy="3" r="1.8" className="fill-royal" />
+        <text className="fill-ink font-display text-[9.2px] font-medium tracking-[0.22em] uppercase">
+          <textPath href={`#${id}`}>Scroll to explore · Web &amp; Data ·</textPath>
+        </text>
+      </svg>
+      <span className={`grid place-items-center rounded-full bg-ink text-paper transition-colors duration-300 group-hover:bg-royal ${inner}`}>
+        <ArrowDown size={arrow} className="transition-transform duration-500 group-hover:translate-y-0.5" />
+      </span>
+    </a>
+  );
+
   const letters = () =>
     NAME.map((ch, i) => (
       <span key={i} className="inline-block overflow-hidden pb-[0.02em] align-top">
@@ -140,7 +168,7 @@ export function Hero({ ready }: { ready: boolean }) {
       <GlowOrb className="top-[64%] left-1/2 size-[min(120vw,900px)] lg:top-[60%]" strength={0.3} />
 
       {/* Swiss grid hairlines */}
-      <div className="wrap pointer-events-none absolute inset-0 hidden grid-cols-4 lg:grid" aria-hidden>
+      <div className="wrap pointer-events-none absolute inset-0 grid grid-cols-4" aria-hidden>
         {[0, 1, 2, 3].map((i) => (
           <motion.span
             key={i}
@@ -189,7 +217,7 @@ export function Hero({ ready }: { ready: boolean }) {
           <ScrambleText text={profile.role} start={ready} delay={500} duration={800} pendingClassName="text-royal/50" />
         </motion.p>
         <motion.p
-          className="mono hidden items-center gap-2 text-muted sm:flex"
+          className="mono flex basis-full items-center gap-2 text-muted lg:basis-auto"
           initial={{ opacity: 0, y: 12 }}
           animate={ready ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.8, ease: EASE, delay: 0.65 }}
@@ -200,8 +228,10 @@ export function Hero({ ready }: { ready: boolean }) {
         </motion.p>
       </motion.div>
 
+      {/* Stage: on phones the name and portrait share one frame (like the laptop); on desktop everything is positioned on the section */}
+      <div className="relative mt-4 min-h-[420px] flex-1 lg:static lg:mt-0">
       {/* Oversized name behind the portrait: stays put (no scroll drift / pointer parallax); only the glitch bursts move it */}
-      <div className="relative z-0 mt-5 lg:static lg:mt-0">
+      <div className="absolute inset-x-0 top-[11%] z-0 lg:static">
         <h1 className={`${nameClass} text-ink`}>
           <span className="sr-only">{profile.fullName}</span>
           <span aria-hidden className={`relative inline-block ${glitch ? 'animate-glitch-base' : ''}`}>
@@ -228,23 +258,23 @@ export function Hero({ ready }: { ready: boolean }) {
       {/* Portrait */}
       <motion.div
         style={{ y: portraitY, x: portraitX, rotate: portraitTilt }}
-        className="relative z-10 mx-auto -mt-[17vw] w-[min(74vw,430px)] origin-bottom lg:absolute lg:bottom-0 lg:left-1/2 lg:mt-0 lg:h-[88%] lg:w-auto lg:-translate-x-1/2"
+        className="absolute bottom-0 left-1/2 z-10 h-full w-auto origin-bottom -translate-x-1/2 lg:h-[88%]"
         onClick={() => setScanKey((k) => k + 1)}
       >
         {/* gentle float on phones/tablets so the portrait never sits still */}
-        <div className={`relative lg:h-full ${reduce ? '' : 'max-lg:animate-float'}`}>
+        <div className={`relative h-full ${reduce ? '' : 'max-lg:animate-float'}`}>
         {/* rim light: a thin signal-blue edge + soft halo following the silhouette */}
-        <div className="rim-light lg:h-full">
+        <div className="rim-light h-full">
         <motion.img
           src={portrait}
           srcSet={`${portraitSm} 640w, ${portrait} 1000w, ${portraitLg} 1400w`}
-          sizes="(min-width: 1024px) 520px, 74vw"
+          sizes="(min-width: 1024px) 520px, 70vw"
           width={1000}
           height={1811}
           alt={`Portrait of ${profile.fullName}`}
           fetchPriority="high"
           decoding="async"
-          className="block h-auto w-full [mask-image:linear-gradient(to_bottom,black_70%,transparent)] lg:h-full lg:w-auto lg:[mask-image:none]"
+          className="block h-full w-auto max-w-none [mask-image:linear-gradient(to_bottom,black_74%,transparent)] lg:[mask-image:none]"
           initial={reduce ? false : { opacity: 0, y: 80, filter: 'blur(14px)' }}
           animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : undefined}
           transition={{ duration: 1.4, ease: EASE, delay: 0.25 }}
@@ -294,55 +324,46 @@ export function Hero({ ready }: { ready: boolean }) {
         </div>
       </motion.div>
 
+      {/* phones: scroll badge sits bottom-right of the frame, as on the laptop */}
+      <motion.div
+        className="wrap pointer-events-none absolute inset-x-0 bottom-14 z-20 flex justify-end lg:hidden"
+        initial={reduce ? false : { opacity: 0, y: 20 }}
+        animate={ready ? { opacity: 1, y: 0 } : undefined}
+        transition={{ duration: 1, ease: EASE, delay: 0.9 }}
+      >
+        {badge('badge-circle-m', 'pointer-events-auto size-[84px]', 'size-9', 16)}
+      </motion.div>
+      </div>
+
       {/* Bottom content */}
-      <div className="wrap relative z-30 -mt-20 flex flex-1 flex-col justify-end gap-8 pb-8 lg:absolute lg:inset-x-0 lg:bottom-10 lg:mt-0 lg:flex-row lg:items-end lg:justify-between lg:pb-0">
+      <div className="wrap relative z-30 -mt-12 flex flex-col gap-8 pb-7 lg:absolute lg:inset-x-0 lg:bottom-10 lg:mt-0 lg:flex-row lg:items-end lg:justify-between lg:pb-0">
         <motion.div
           className="max-w-[24rem] xl:max-w-[26rem]"
           initial={reduce ? false : { opacity: 0, y: 30 }}
           animate={ready ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 1, ease: EASE, delay: 0.75 }}
         >
-          <p className="eyebrow mb-4 text-royal-ink">{profile.positioning}</p>
+          <p className="eyebrow mb-4 text-royal-ink max-[400px]:text-[0.6875rem] max-[400px]:tracking-[0.12em]">{profile.positioning}</p>
           <p className="font-display text-[clamp(1.6rem,3.2vw,2.35rem)] leading-[1.05] font-medium tracking-[-0.025em] text-ink">
             {profile.headline}
           </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Button href="#projects" onClick={go('projects')} icon={<ArrowDown size={18} />}>
+          <div className="mt-6 grid grid-cols-[1.15fr_1fr] gap-2.5 sm:mt-7 sm:flex sm:flex-wrap sm:gap-3">
+            <Button href="#projects" onClick={go('projects')} icon={<ArrowDown size={18} />} className={phoneBtn}>
               Explore Projects
             </Button>
-            <Button href={cv.en.href} download variant="outline" icon={<ArrowDown size={18} />}>
+            <Button href={cv.en.href} download variant="outline" icon={<ArrowDown size={18} />} className={phoneBtn}>
               Download CV
             </Button>
           </div>
         </motion.div>
 
         <motion.div
-          className="flex items-end justify-between gap-6 lg:flex-col lg:items-end"
+          className="hidden items-end justify-between gap-6 lg:flex lg:flex-col lg:items-end"
           initial={reduce ? false : { opacity: 0, y: 30 }}
           animate={ready ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 1, ease: EASE, delay: 0.9 }}
         >
-          <a
-            href="#about"
-            onClick={go('about')}
-            className="group relative grid size-28 place-items-center rounded-full lg:size-32"
-            aria-label="Scroll to About section"
-          >
-            <svg viewBox="0 0 100 100" className="absolute inset-0 size-full animate-[spin_16s_linear_infinite]" aria-hidden>
-              <defs>
-                <path id="badge-circle" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" />
-              </defs>
-              {/* outer orbit with a small blue marker travelling round */}
-              <circle cx="50" cy="50" r="47" fill="none" className="stroke-royal/25" strokeWidth="0.6" />
-              <circle cx="50" cy="3" r="1.8" className="fill-royal" />
-              <text className="fill-ink font-display text-[9.2px] font-medium tracking-[0.22em] uppercase">
-                <textPath href="#badge-circle">Scroll to explore · Web &amp; Data ·</textPath>
-              </text>
-            </svg>
-            <span className="grid size-12 place-items-center rounded-full bg-ink text-paper transition-colors duration-300 group-hover:bg-royal">
-              <ArrowDown size={20} className="transition-transform duration-500 group-hover:translate-y-0.5" />
-            </span>
-          </a>
+          {badge('badge-circle', 'size-28 lg:size-32', 'size-12', 20)}
           <div className="flex flex-col items-end gap-1.5 text-right">
             <p className="mono text-muted">
               06°12′S <span className="text-ink/30">/</span> 106°50′E
