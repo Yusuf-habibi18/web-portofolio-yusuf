@@ -253,7 +253,7 @@ export function Hero({ ready }: { ready: boolean }) {
       {/* Stage: on phones the name and portrait share one frame (like the laptop); on desktop everything is positioned on the section */}
       <div className="relative mt-4 min-h-[420px] flex-1 lg:static lg:mt-0">
       {/* Oversized name behind the portrait: stays put (no scroll drift / pointer parallax); only the glitch bursts move it */}
-      <div className="absolute inset-x-0 top-[11%] z-0 lg:static">
+      <div className="absolute inset-x-0 top-[2%] z-0 lg:static">
         <h1 className={`${nameClass} text-ink`}>
           <span className="sr-only">{profile.fullName}</span>
           <span aria-hidden className={`relative inline-block ${glitch ? 'animate-glitch-base' : ''}`}>
