@@ -28,6 +28,29 @@
   --animate-scan: scan 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-blink: blink 1.1s steps(2, start) infinite;
   --animate-wave-drift: wave-drift 46s linear infinite;
+  --animate-glow-breathe: glow-breathe 9s ease-in-out infinite;
+  --animate-beam: beam-sweep 7s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+  --animate-line-pulse: line-pulse 6s linear infinite;
+
+  /* Soft electric-blue light that slowly "breathes" */
+  @keyframes glow-breathe {
+    0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+  }
+  /* A bright segment sweeping along a hairline */
+  @keyframes beam-sweep {
+    0% { transform: translateX(-100%); opacity: 0; }
+    10% { opacity: 1; }
+    55% { transform: translateX(400%); opacity: 1; }
+    56%, 100% { transform: translateX(400%); opacity: 0; }
+  }
+  /* A pulse of light travelling down a vertical grid line */
+  @keyframes line-pulse {
+    0% { transform: translateY(-100%); opacity: 0; }
+    8% { opacity: 1; }
+    60% { transform: translateY(520%); opacity: 1; }
+    61%, 100% { transform: translateY(520%); opacity: 0; }
+  }
   --animate-float: float 6s ease-in-out infinite;
 
   @keyframes float {

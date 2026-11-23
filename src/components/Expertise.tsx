@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { expertise } from '../data/content';
 import type { ExpertiseGroup } from '../data/content';
 import { Corners } from './ui/Hud';
+import { GlowOrb } from './ui/Light';
 import { ArrowUpRight } from './ui/Icons';
 import { Reveal } from './ui/Reveal';
 import { Spotlight } from './ui/Spotlight';
@@ -81,6 +82,12 @@ function Panel({ group, delay }: { group: ExpertiseGroup; delay: number }) {
             : 'bg-surface text-ink hover:shadow-[0_30px_60px_-30px_rgba(17,18,22,0.35)]'
         }`}
       >
+        {dark && (
+          // blue light pooling in the dark panel's corner
+          <span className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]" aria-hidden>
+            <GlowOrb className="top-[6%] left-[88%] size-[560px]" strength={0.42} />
+          </span>
+        )}
         <Corners
           size={16}
           inset="-inset-2"

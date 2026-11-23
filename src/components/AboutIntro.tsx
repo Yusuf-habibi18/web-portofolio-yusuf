@@ -115,7 +115,7 @@ export function AboutIntro() {
           <a
             href="#projects"
             onClick={goTo('projects')}
-            className="group relative inline-flex h-12 items-center gap-3 overflow-hidden rounded-full bg-royal pr-1.5 pl-5 text-sm font-medium text-surface transition-colors duration-300 hover:bg-ink sm:h-13 sm:pr-2 sm:pl-7 sm:text-[0.9375rem]"
+            className="group relative inline-flex h-12 items-center gap-3 overflow-hidden rounded-full bg-royal pr-1.5 pl-5 text-sm font-medium text-surface transition-[background-color,box-shadow] duration-300 hover:bg-royal-deep hover:shadow-[0_0_34px_-2px_rgba(36,87,255,0.8)] sm:h-13 sm:pr-2 sm:pl-7 sm:text-[0.9375rem]"
           >
             <span
               className="pointer-events-none absolute inset-y-0 left-0 w-1/3 -translate-x-[150%] -skew-x-12 bg-white/25 transition-transform duration-700 ease-out group-hover:translate-x-[420%]"

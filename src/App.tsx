@@ -11,6 +11,7 @@ import { Nav } from './components/Nav';
 import { Projects } from './components/Projects';
 import { ScrollHud } from './components/ScrollHud';
 import { SoundAutoplay } from './components/SoundAutoplay';
+import { LightBeam } from './components/ui/Light';
 import { initSmoothScroll } from './lib/scroll';
 
 export default function App() {
@@ -48,8 +49,17 @@ export default function App() {
         <Hero ready={ready} />
         <Marquee />
         <About />
+        <div className="wrap" aria-hidden>
+          <LightBeam />
+        </div>
         <Expertise />
+        <div className="wrap" aria-hidden>
+          <LightBeam delay={2.3} />
+        </div>
         <Projects />
+        <div className="wrap" aria-hidden>
+          <LightBeam delay={4.6} />
+        </div>
         <Education />
         <Contact />
       </main>

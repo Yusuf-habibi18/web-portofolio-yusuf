@@ -15,7 +15,7 @@ type Props = {
 };
 
 const styles = {
-  primary: 'bg-royal text-surface hover:bg-ink',
+  primary: 'bg-royal text-surface hover:bg-royal-deep hover:shadow-[0_0_34px_-2px_rgba(36,87,255,0.8)]',
   outline: 'border border-ink/80 text-ink hover:border-royal hover:bg-royal hover:text-surface',
   light: 'bg-paper text-ink hover:bg-royal hover:text-surface',
 };
@@ -29,7 +29,7 @@ export function Button({ href, children, variant = 'primary', onClick, external,
       onClick={onClick}
       {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
       {...(download ? { download: '' } : {})}
-      className={`group relative inline-flex h-12 items-center gap-3 overflow-hidden rounded-full pr-2 pl-6 text-[0.9375rem] font-medium transition-colors duration-300 ${styles[variant]} ${className}`}
+      className={`group relative inline-flex h-12 items-center gap-3 overflow-hidden rounded-full pr-2 pl-6 text-[0.9375rem] font-medium transition-[background-color,color,border-color,box-shadow] duration-300 ${styles[variant]} ${className}`}
     >
       {variant === 'primary' && (
         <span

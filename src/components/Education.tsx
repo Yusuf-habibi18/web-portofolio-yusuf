@@ -52,7 +52,7 @@ export function Education() {
 
           <Reveal delay={0.1} className="md:col-span-4">
             <Spotlight className="h-full rounded-[1.75rem]" tilt={4} tone="dark">
-            <article className="relative flex h-full flex-col justify-between overflow-hidden rounded-[1.75rem] bg-royal p-6 text-surface md:p-10">
+            <article className="relative flex h-full flex-col justify-between overflow-hidden rounded-[1.75rem] bg-royal p-6 text-surface shadow-[0_26px_70px_-24px_rgba(36,87,255,0.85)] md:p-10">
               <Corners size={14} inset="inset-4 md:inset-5" className="text-surface/45" />
               <p className="mono flex justify-between text-surface/80">
                 <span>GPA</span>

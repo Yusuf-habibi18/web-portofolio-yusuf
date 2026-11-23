@@ -4,6 +4,7 @@ import type { MouseEvent } from 'react';
 import { contact, cv, profile } from '../data/content';
 import { scrollToId } from '../lib/scroll';
 import { ArrowUp, ArrowUpRight, Chat, Check, Copy, FileText, Github, Linkedin } from './ui/Icons';
+import { GlowOrb } from './ui/Light';
 import { Magnetic } from './ui/Magnetic';
 import { Reveal, WordsReveal } from './ui/Reveal';
 import { ScrambleText } from './ui/ScrambleText';
@@ -35,6 +36,9 @@ export function Contact() {
 
   return (
     <section id="contact" className="grid-dark relative overflow-hidden bg-ink text-paper" aria-label="Contact">
+      {/* aurora: blue light pooling behind the heading and along the bottom */}
+      <GlowOrb className="top-[24%] left-[64%] size-[min(120vw,960px)]" strength={0.34} />
+      <GlowOrb className="top-[88%] left-[10%] size-[min(110vw,760px)]" strength={0.2} delay={4.5} />
       <div className="wrap pt-24 pb-10 md:pt-36">
         <Reveal>
           <p className="eyebrow flex items-center gap-3 text-slate">

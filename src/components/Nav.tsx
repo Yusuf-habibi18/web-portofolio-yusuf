@@ -102,7 +102,7 @@ export function Nav({ ready }: { ready: boolean }) {
             <a
               href="#contact"
               onClick={go('contact')}
-              className="group hidden h-12 items-center gap-2 rounded-full bg-royal pr-4 pl-6 text-sm font-medium text-surface transition-colors duration-300 hover:bg-ink md:inline-flex"
+              className="group hidden h-12 items-center gap-2 rounded-full bg-royal pr-4 pl-6 text-sm font-medium text-surface transition-[background-color,box-shadow] duration-300 hover:bg-royal-deep hover:shadow-[0_0_34px_-2px_rgba(36,87,255,0.8)] md:inline-flex"
             >
               Let&rsquo;s Talk
               <ArrowUpRight size={18} className="transition-transform duration-300 group-hover:rotate-45" />

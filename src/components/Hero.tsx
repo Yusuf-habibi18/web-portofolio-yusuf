@@ -16,6 +16,7 @@ import { useJakartaTime } from '../hooks/useClock';
 import { scrollToId } from '../lib/scroll';
 import { Button } from './ui/Button';
 import { Corners, Crosshair } from './ui/Hud';
+import { GlowOrb } from './ui/Light';
 import { ScrambleText } from './ui/ScrambleText';
 import { ArrowDown, MapPin } from './ui/Icons';
 
@@ -135,17 +136,26 @@ export function Hero({ ready }: { ready: boolean }) {
       className="relative flex min-h-[100svh] flex-col overflow-hidden pt-24 lg:block lg:h-[100svh] lg:min-h-[680px] lg:pt-0"
       aria-label="Introduction"
     >
+      {/* Back-light: a soft blue pool behind the portrait, like a stage light */}
+      <GlowOrb className="top-[64%] left-1/2 size-[min(120vw,900px)] lg:top-[60%]" strength={0.3} />
+
       {/* Swiss grid hairlines */}
       <div className="wrap pointer-events-none absolute inset-0 hidden grid-cols-4 lg:grid" aria-hidden>
         {[0, 1, 2, 3].map((i) => (
           <motion.span
             key={i}
-            className="border-l border-line/70 last:border-r"
+            className="relative overflow-hidden border-l border-line/70 last:border-r"
             initial={{ scaleY: 0 }}
             animate={ready ? { scaleY: 1 } : undefined}
             style={{ originY: 0 }}
             transition={{ duration: 1.4, ease: EASE, delay: 0.1 * i }}
-          />
+          >
+            {/* light pulse travelling down the grid line, like data on a wire */}
+            <span
+              className="absolute top-0 -left-px h-1/6 w-px animate-line-pulse bg-gradient-to-b from-transparent via-royal to-transparent shadow-[0_0_10px_1px_rgb(36_87_255/0.55)]"
+              style={{ animationDelay: `${-i * 1.6}s` }}
+            />
+          </motion.span>
         ))}
         {['25%', '75%'].map((left, i) => (
           <motion.span

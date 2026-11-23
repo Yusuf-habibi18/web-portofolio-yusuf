@@ -149,7 +149,7 @@ export function ProjectCard({ project, index, total }: { project: Project; index
       <Spotlight className={`rounded-2xl md:col-span-7 ${flip ? 'md:order-2' : ''}`} tilt={3}>
         <MediaLink href={open} label={openLabel} title={project.title}>
         <motion.div
-          className={`relative overflow-hidden rounded-2xl shadow-[0_24px_60px_-35px_rgba(17,18,22,0.45)] ring-1 ring-ink/10 transition-shadow duration-500 group-hover/card:ring-royal/40 md:aspect-[16/10] ${
+          className={`relative overflow-hidden rounded-2xl shadow-[0_24px_60px_-35px_rgba(17,18,22,0.45)] ring-1 ring-ink/10 transition-shadow duration-500 group-hover/card:shadow-[0_30px_80px_-28px_rgba(36,87,255,0.75)] group-hover/card:ring-royal/40 md:aspect-[16/10] ${
             project.image ? 'aspect-[16/10]' : ''
           }`}
           initial={reduce ? false : { clipPath: 'inset(12% 6% 12% 6% round 1rem)', opacity: 0.4 }}
