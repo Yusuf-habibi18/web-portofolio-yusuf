@@ -1,11 +1,14 @@
-import { motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { lazy, Suspense, useId, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Project, ProjectLink } from '../data/content';
 import { Corners } from './ui/Hud';
 import { ArrowUpRight, Github } from './ui/Icons';
 import { Spotlight } from './ui/Spotlight';
-import { MedallionVisual } from './visuals/MedallionVisual';
-import { WtiVisual } from './visuals/WtiVisual';
+// Data-project visuals (incl. the WTI series) load only when the Projects section needs them.
+const MedallionVisual = lazy(() => import('./visuals/MedallionVisual').then((m) => ({ default: m.MedallionVisual })));
+const WtiVisual = lazy(() => import('./visuals/WtiVisual').then((m) => ({ default: m.WtiVisual })));
+const VisualFallback = () => <div className="aspect-[16/10] size-full animate-pulse bg-ink/90" aria-hidden />;
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -35,8 +38,18 @@ function LinkPill({ link, icon }: { link: ProjectLink; icon: 'github' | 'live' }
 }
 
 function Media({ project }: { project: Project }) {
-  if (project.visual === 'medallion') return <MedallionVisual />;
-  if (project.visual === 'wti') return <WtiVisual />;
+  if (project.visual === 'medallion')
+    return (
+      <Suspense fallback={<VisualFallback />}>
+        <MedallionVisual />
+      </Suspense>
+    );
+  if (project.visual === 'wti')
+    return (
+      <Suspense fallback={<VisualFallback />}>
+        <WtiVisual />
+      </Suspense>
+    );
   if (!project.image) return null;
   const { src, secondary, alt } = project.image;
   return (
@@ -76,9 +89,50 @@ function MediaLink({ href, label, title, children }: { href: string | null; labe
   );
 }
 
+/** Role · Problem · Solution · How I built it · Result, laid out on the editorial grid. */
+function CaseStudy({ project, id }: { project: Project; id: string }) {
+  const c = project.caseStudy;
+  const block = (n: string, label: string, body: ReactNode) => (
+    <div className="border-t border-ink/15 pt-4">
+      <p className="mono flex items-center gap-2 text-muted">
+        <span className="text-royal-ink">{n}</span> {label}
+      </p>
+      <div className="mt-3 text-[0.9375rem] leading-relaxed text-ink/85">{body}</div>
+    </div>
+  );
+  return (
+    <div id={id} className="relative mt-2 rounded-2xl bg-surface/70 p-5 ring-1 ring-ink/10 backdrop-blur-sm md:p-8">
+      <Corners size={12} inset="-inset-1.5" className="text-royal/60" />
+      <p className="flex flex-col gap-1.5 sm:flex-row sm:items-baseline sm:gap-3">
+        <span className="mono shrink-0 text-royal-ink">Role</span>
+        <span className="text-[0.9375rem] leading-snug text-ink/85">{c.role}</span>
+      </p>
+      <div className="mt-6 grid gap-6 md:grid-cols-2 md:gap-x-10 lg:grid-cols-4">
+        {block('01', 'Problem', <p>{c.problem}</p>)}
+        {block('02', 'Solution', <p>{c.solution}</p>)}
+        {block(
+          '03',
+          'How I built it',
+          <ul className="space-y-2">
+            {c.build.map((b) => (
+              <li key={b} className="flex gap-2.5">
+                <span className="mt-[0.5em] size-1.5 shrink-0 bg-royal" aria-hidden />
+                {b}
+              </li>
+            ))}
+          </ul>,
+        )}
+        {block('04', 'Result', <p>{c.result}</p>)}
+      </div>
+    </div>
+  );
+}
+
 export function ProjectCard({ project, index, total }: { project: Project; index: number; total: number }) {
   const reduce = useReducedMotion();
   const flip = index % 2 === 1;
+  const [expanded, setExpanded] = useState(false);
+  const panelId = useId();
   // Screenshots open the live site (or the code) directly; interactive charts stay as they are.
   const open = project.image ? project.live?.href || project.github.href || null : null;
   const openLabel = project.live?.href ? 'Open live ↗' : 'View code ↗';
@@ -170,7 +224,36 @@ export function ProjectCard({ project, index, total }: { project: Project; index
           {project.live && <LinkPill link={project.live} icon="live" />}
           <LinkPill link={project.github} icon="github" />
         </div>
+
+        <button
+          type="button"
+          onClick={() => setExpanded((o) => !o)}
+          aria-expanded={expanded}
+          aria-controls={panelId}
+          className="group/cs mono mt-6 inline-flex w-fit items-center gap-2 text-ink transition-colors hover:text-royal-ink"
+        >
+          <span className="grid size-6 place-items-center rounded-[4px] border border-current transition-transform duration-300">
+            {expanded ? '−' : '+'}
+          </span>
+          {expanded ? 'Hide case study' : 'Read case study'}
+          <span className="h-px w-8 bg-current opacity-40 transition-all duration-300 group-hover/cs:w-12" aria-hidden />
+        </button>
       </motion.div>
+
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <motion.div
+            key="case"
+            className="overflow-hidden md:col-span-12 md:order-3"
+            initial={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
+            animate={reduce ? { opacity: 1 } : { height: 'auto', opacity: 1 }}
+            exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
+            transition={{ duration: 0.55, ease: EASE }}
+          >
+            <CaseStudy project={project} id={panelId} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.article>
   );
 }

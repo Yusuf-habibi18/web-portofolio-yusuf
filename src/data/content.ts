@@ -124,6 +124,20 @@ export type Project = {
   github: ProjectLink;
   /** Omit when a live demo does not apply. */
   live?: ProjectLink;
+  /** Recruiter-facing story. Facts only: taken from the CV and verified project notes. */
+  caseStudy: {
+    role: string;
+    problem: string;
+    solution: string;
+    build: string[];
+    result: string;
+  };
+};
+
+/** Downloadable CVs (static files in public/cv). */
+export const cv = {
+  en: { label: 'CV (English)', href: 'cv/Yusuf-Habibi-Herbin-CV-EN.pdf' },
+  id: { label: 'CV (Bahasa Indonesia)', href: 'cv/Yusuf-Habibi-Herbin-CV-ID.pdf' },
 };
 
 export const projects: Project[] = [
@@ -148,6 +162,21 @@ export const projects: Project[] = [
     },
     github: { label: 'Source', href: null, note: 'Client project, source not public' },
     live: { label: 'aritsirham.com', href: 'https://aritsirham.com' },
+    caseStudy: {
+      role: 'Solo freelance developer: requirements, build, QA and handover',
+      problem:
+        'An independent insurance consultant needed a professional website in Indonesian and English that explains the services and leads visitors to a consultation.',
+      solution:
+        'A bilingual, responsive website that explains each service, lets visitors estimate their protection gap, and routes them to a WhatsApp consultation.',
+      build: [
+        'Gathered requirements from client documents and wrote a proposal with scope, deliverables, out-of-scope items and a six-phase timeline',
+        '20+ pages in Indonesian and English, built with HTML, CSS and JavaScript',
+        'Protection-gap calculator and a validated consultation form that hands off to WhatsApp',
+        'Handled change requests across revision rounds and reviewed content against insurance marketing compliance guidelines',
+      ],
+      result:
+        'Delivered, paid and live at aritsirham.com. Before handover a custom script checked 200+ internal links, plus 15 form-validation test cases and layouts from 320 to 1366 px; handed over with technical documentation.',
+    },
   },
   {
     id: 'kasera',
@@ -173,6 +202,22 @@ export const projects: Project[] = [
       href: 'https://github.com/Yusuf-habibi18/project-basuo-coffee',
     },
     live: { label: 'Live demo', href: null, note: 'Not hosted yet' },
+    caseStudy: {
+      role: 'Solo: database design, REST API and front end',
+      problem:
+        'A working café has three people on one order: the customer ordering, the cashier working the queue and the owner tracking sales. An order must never be half-saved.',
+      solution:
+        'A web-based ordering and point-of-sale system: customer menu and cart, cashier queue, table management and an admin dashboard with sales reports.',
+      build: [
+        'Relational MySQL schema: 6 tables with foreign keys and indexes',
+        'REST API with 29 endpoints in Node.js + Express, using parameterized queries',
+        'Atomic order processing with database transactions (commit / rollback)',
+        'JWT authentication, bcrypt password hashing and role-based access for Administrator and Cashier',
+        'Sales reports with daily revenue charts, best sellers, date filter and CSV export',
+      ],
+      result:
+        'The end-to-end flow works: an order placed from the customer menu lands in the cashier queue. It runs locally and is not hosted yet; the code is on GitHub.',
+    },
   },
   {
     id: 'smart-socket',
@@ -191,6 +236,21 @@ export const projects: Project[] = [
     image: { src: iotDashboard, alt: 'Smart Socket energy monitoring dashboard' },
     github: { label: 'GitHub', href: 'https://github.com/Yusuf-habibi18/UAS-IoT' },
     live: { label: 'Live demo', href: 'https://yusuf-habibi18.github.io/UAS-IoT/' },
+    caseStudy: {
+      role: 'Web dashboard only, in a team project for an IoT course. Firmware, sensors, the Flask/MQTT backend and the database were built by teammates.',
+      problem:
+        'The team’s ESP32 smart socket recorded electrical readings, but there was no clear way to watch them live or to present the system without the hardware.',
+      solution:
+        'A web dashboard that shows voltage, current, power, energy (kWh) and estimated electricity cost in real time, with a demo mode.',
+      build: [
+        'Real-time charts fed by the team’s Flask REST API',
+        'Connected the previously unused authentication and device-configuration endpoints',
+        'Fixed a bug that stopped logged data from displaying',
+        'Client-side data simulator (demo mode), so the system runs without hardware or a server',
+      ],
+      result:
+        'The system can be presented without any hardware, and the live demo on GitHub Pages runs in demo mode.',
+    },
   },
   {
     id: 'medallion',
@@ -208,6 +268,18 @@ export const projects: Project[] = [
     tech: ['SQL Server', 'T-SQL', 'Medallion architecture'],
     visual: 'medallion',
     github: { label: 'GitHub', href: null, note: 'Repository coming soon' },
+    caseStudy: {
+      role: 'Solo learning project',
+      problem: 'Raw data is messy, and a pipeline is only useful if you can prove that every layer is correct.',
+      solution: 'A bronze → silver → gold pipeline in SQL Server with automated data quality checks between layers.',
+      build: [
+        '891 raw Titanic rows loaded into the bronze layer',
+        'Silver and gold layers built in T-SQL',
+        'Quality checks at every layer, with expected values computed from the previous layer instead of typed by hand',
+        'Every run logged in validation_log with a run_id',
+      ],
+      result: 'All 11 silver and gold checks pass, and every run can be traced through validation_log.',
+    },
   },
   {
     id: 'wti',
@@ -225,6 +297,20 @@ export const projects: Project[] = [
     tech: ['Python', 'Pandas', 'BeautifulSoup', 'statsmodels'],
     visual: 'wti',
     github: { label: 'GitHub', href: null, note: 'Notebook not published yet' },
+    caseStudy: {
+      role: 'Solo, Big Data course project',
+      problem:
+        'Daily WTI crude oil prices are published on the U.S. EIA website as a web page, not as an analysis-ready dataset.',
+      solution:
+        'An end-to-end Python pipeline that scrapes, validates and stores the prices, then forecasts the next 7 days.',
+      build: [
+        'Scraped 10,200 daily records with requests + BeautifulSoup',
+        'Validated data types, checked duplicates and missing values, and stored raw and cleaned data separately',
+        'ADF stationarity test and AIC-based model selection, resulting in ARIMA(2,1,2) with statsmodels',
+      ],
+      result:
+        'A reproducible pipeline and a 7-day forecast. The forecast itself is weak (MAPE 26%), so the value of this project is the pipeline, and I report that honestly.',
+    },
   },
 ];
 
