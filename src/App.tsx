@@ -10,6 +10,7 @@ import { Marquee } from './components/Marquee';
 import { Nav } from './components/Nav';
 import { Projects } from './components/Projects';
 import { ScrollHud } from './components/ScrollHud';
+import { SoundAutoplay } from './components/SoundAutoplay';
 import { initSmoothScroll } from './lib/scroll';
 
 export default function App() {
@@ -38,6 +39,7 @@ export default function App() {
       >
         Skip to content
       </a>
+      <SoundAutoplay />
       <AmbientWaves ready={ready} />
       <Nav ready={ready} />
       {ready && <CyberCursor />}

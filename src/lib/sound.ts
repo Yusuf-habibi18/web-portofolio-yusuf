@@ -1,14 +1,13 @@
 /**
  * Generative "cyber ambient" soundtrack + tiny UI sounds, made with the Web Audio
- * API (no audio files, nothing licensed). On by default: it tries to start as the
- * page opens, and if the browser blocks audio until a gesture (most do), it starts
- * on the visitor's first click / tap / key press. Turning it off is remembered.
+ * API (no audio files, nothing licensed). Always on: it tries to start as the page
+ * opens, and if the browser blocks audio until a gesture (most do), it starts on
+ * the visitor's first click / tap / key press.
  *
  * Music: slow detuned-saw pad through a breathing low-pass + reverb, a soft sub,
  * and sparse sine "data" plucks with a feedback delay, over a faint air layer.
  */
 
-const PREF_KEY = 'yhh-sound';
 const MUSIC_LEVEL = 0.2;
 const SFX_LEVEL = 0.32;
 
@@ -199,14 +198,6 @@ function emit() {
   subscribers.forEach((fn) => fn(on));
 }
 
-function remember(v: boolean) {
-  try {
-    localStorage.setItem(PREF_KEY, v ? '1' : '0');
-  } catch {
-    /* storage unavailable: preference just isn't remembered */
-  }
-}
-
 /** Short rising "power on" chord used when sound is switched on. */
 function chime(e: Engine) {
   const t = e.ctx.currentTime + 0.03;
@@ -227,15 +218,6 @@ function chime(e: Engine) {
 
 export const sound = {
   isOn: () => on,
-
-  /** Sound is wanted unless the visitor switched it off before. */
-  wanted(): boolean {
-    try {
-      return localStorage.getItem(PREF_KEY) !== '0';
-    } catch {
-      return true;
-    }
-  },
 
   /**
    * Try to start without a gesture. Resolves true if the browser allowed it
@@ -265,7 +247,6 @@ export const sound = {
   async setOn(v: boolean) {
     if (v === on) return;
     on = v;
-    remember(v);
     emit();
     if (v) {
       engine ??= build();
@@ -288,10 +269,6 @@ export const sound = {
         if (!on) e.ctx.suspend();
       }, 700);
     }
-  },
-
-  toggle() {
-    return this.setOn(!on);
   },
 
   /** Tiny rising blip for hovering interactive elements. */
