@@ -197,10 +197,11 @@ export function Hero({ ready }: { ready: boolean }) {
           <span aria-hidden className={`inline-block ${glitch ? 'animate-glitch-base' : ''}`}>
             {letters()}
           </span>
-          {glitch && (
+          {/* signature glitch look: frozen at rest, with a burst every 5s (static for reduced motion) */}
+          {(glitch || (reduce && ready)) && (
             <>
-              {ghost('text-royal animate-glitch-a')}
-              {ghost('text-paper animate-glitch-b')}
+              {ghost(`text-royal glitch-a-rest ${reduce ? '' : 'animate-glitch-a'}`)}
+              {ghost(`text-paper glitch-b-rest ${reduce ? '' : 'animate-glitch-b'}`)}
             </>
           )}
         </h1>

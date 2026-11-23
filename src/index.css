@@ -47,7 +47,8 @@
     6% { clip-path: inset(80% 0 4% 0); transform: translateX(0.03em); }
     8% { clip-path: inset(4% 0 86% 0); transform: translateX(-0.04em); }
     10% { clip-path: inset(46% 0 36% 0); transform: translateX(0.02em); }
-    12%, 100% { clip-path: inset(0 0 100% 0); transform: none; }
+    /* settle on the signature look (same as .glitch-a-rest) */
+    12%, 100% { clip-path: inset(10% 0 72% 0); transform: translateX(-0.035em); }
   }
   @keyframes glitch-b {
     0% { clip-path: inset(64% 0 22% 0); transform: translateX(0.03em); }
@@ -56,7 +57,8 @@
     7% { clip-path: inset(38% 0 48% 0); transform: translateX(-0.03em); }
     9% { clip-path: inset(70% 0 14% 0); transform: translateX(0.04em); }
     11% { clip-path: inset(14% 0 78% 0); transform: translateX(-0.02em); }
-    12%, 100% { clip-path: inset(0 0 100% 0); transform: none; }
+    /* settle on the signature look (same as .glitch-b-rest) */
+    12%, 100% { clip-path: inset(64% 0 22% 0); transform: translateX(0.03em); }
   }
   @keyframes glitch-base {
     0% { transform: translateX(0.012em); }
@@ -184,6 +186,16 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     font-variant-numeric: tabular-nums;
+  }
+  /* "YUSUF" signature glitch, frozen: a shifted electric-blue band on top and a torn
+     slice near the bottom. The burst animation always settles back onto this. */
+  .glitch-a-rest {
+    clip-path: inset(10% 0 72% 0);
+    transform: translateX(-0.035em);
+  }
+  .glitch-b-rest {
+    clip-path: inset(64% 0 22% 0);
+    transform: translateX(0.03em);
   }
   /* Faint blue scanlines, used on hover over media */
   .scanlines {
