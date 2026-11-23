@@ -4,32 +4,51 @@ import { sound } from '../lib/sound';
 const SELECTOR = 'a, button, [role="button"], [data-cursor]';
 
 /**
- * Sound on/off button (equalizer bars). Off by default. If the visitor switched
- * it on during an earlier visit, sound resumes on their first click/key press
- * (browsers don't allow it before a gesture). While on, hovering interactive
- * elements gives a soft blip and pressing them a short click.
+ * Sound on/off button (equalizer bars). Sound is on by default: it starts as the
+ * page opens if the browser allows, otherwise on the first click / tap / key press.
+ * Switching it off is remembered. While on, hovering interactive elements gives a
+ * soft blip and pressing them a short click.
  */
 export function SoundToggle({ className = '' }: { className?: string }) {
   const [on, setOn] = useState(sound.isOn());
 
   useEffect(() => sound.subscribe(setOn), []);
 
-  // Resume a remembered "on" preference at the first gesture (not on the toggle itself).
+  // Autostart: try right away; if the browser blocks audio, start on the first
+  // click / tap / key press anywhere (the toggle itself handles its own click).
   useEffect(() => {
     if (!sound.wanted()) return;
+    let done = false;
     const first = (e: Event) => {
       const t = e.target as Element | null;
-      if (t?.closest('[data-sound-toggle]')) return;
+      if (done || t?.closest('[data-sound-toggle]')) return;
+      done = true;
       sound.setOn(true);
       cleanup();
     };
     const cleanup = () => {
-      window.removeEventListener('pointerdown', first);
-      window.removeEventListener('keydown', first);
+      window.removeEventListener('pointerdown', first, true);
+      window.removeEventListener('keydown', first, true);
+      window.removeEventListener('touchend', first, true);
     };
-    window.addEventListener('pointerdown', first);
-    window.addEventListener('keydown', first);
-    return cleanup;
+    window.addEventListener('pointerdown', first, true);
+    window.addEventListener('keydown', first, true);
+    window.addEventListener('touchend', first, true);
+    sound.tryAutostart().then((ok) => {
+      if (ok) {
+        done = true;
+        cleanup();
+      }
+    });
+    // if the visitor turns sound on/off themselves first, stop waiting
+    const unsub = sound.subscribe(() => {
+      done = true;
+      cleanup();
+    });
+    return () => {
+      cleanup();
+      unsub();
+    };
   }, []);
 
   // UI sounds

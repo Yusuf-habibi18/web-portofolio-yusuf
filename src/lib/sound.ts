@@ -1,7 +1,8 @@
 /**
  * Generative "cyber ambient" soundtrack + tiny UI sounds, made with the Web Audio
- * API (no audio files, nothing licensed). Off by default: browsers only allow
- * sound after a user gesture, so it starts from the sound toggle.
+ * API (no audio files, nothing licensed). On by default: it tries to start as the
+ * page opens, and if the browser blocks audio until a gesture (most do), it starts
+ * on the visitor's first click / tap / key press. Turning it off is remembered.
  *
  * Music: slow detuned-saw pad through a breathing low-pass + reverb, a soft sub,
  * and sparse sine "data" plucks with a feedback delay, over a faint air layer.
@@ -227,13 +228,31 @@ function chime(e: Engine) {
 export const sound = {
   isOn: () => on,
 
-  /** Whether the visitor switched sound on during a previous visit. */
+  /** Sound is wanted unless the visitor switched it off before. */
   wanted(): boolean {
     try {
-      return localStorage.getItem(PREF_KEY) === '1';
+      return localStorage.getItem(PREF_KEY) !== '0';
     } catch {
-      return false;
+      return true;
     }
+  },
+
+  /**
+   * Try to start without a gesture. Resolves true if the browser allowed it
+   * (audio actually running), false if it is still blocked.
+   */
+  async tryAutostart(): Promise<boolean> {
+    if (on) return true;
+    engine ??= build();
+    const e = engine;
+    try {
+      await Promise.race([e.ctx.resume(), new Promise((r) => window.setTimeout(r, 400))]);
+    } catch {
+      /* blocked */
+    }
+    if (e.ctx.state !== 'running') return false;
+    await this.setOn(true);
+    return true;
   },
 
   subscribe(fn: (v: boolean) => void) {
