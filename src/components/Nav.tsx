@@ -4,7 +4,7 @@ import type { MouseEvent } from 'react';
 import { contact, cv, navLinks, profile } from '../data/content';
 import { useActiveSection } from '../hooks/useActiveSection';
 import { lockScroll, scrollToId } from '../lib/scroll';
-import { ArrowUpRight } from './ui/Icons';
+import { ArrowUpRight, WhatsApp } from './ui/Icons';
 import { SoundToggle } from './SoundToggle';
 import { ScrambleText } from './ui/ScrambleText';
 
@@ -183,7 +183,13 @@ export function Nav({ ready }: { ready: boolean }) {
                 <a href={contact.phone.href} className="text-paper">
                   {contact.phone.label}
                 </a>
-                <a href={contact.whatsapp.href} target="_blank" rel="noreferrer" className="text-paper">
+                <a
+                  href={contact.whatsapp.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 text-paper"
+                >
+                  <WhatsApp size={15} />
                   WhatsApp ↗
                 </a>
               </span>

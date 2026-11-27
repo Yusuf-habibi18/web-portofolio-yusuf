@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type { MouseEvent } from 'react';
 import { contact, cv, profile } from '../data/content';
 import { scrollToId } from '../lib/scroll';
-import { ArrowUp, ArrowUpRight, Chat, Check, Copy, FileText, Github, Linkedin } from './ui/Icons';
+import { ArrowUp, ArrowUpRight, Check, Copy, FileText, Github, Linkedin, WhatsApp } from './ui/Icons';
 import { GlowOrb } from './ui/Light';
 import { Magnetic } from './ui/Magnetic';
 import { Reveal, WordsReveal } from './ui/Reveal';
@@ -28,7 +28,7 @@ export function Contact() {
   };
 
   const socials = [
-    { label: 'WhatsApp', value: contact.phone.label, href: contact.whatsapp.href, icon: <Chat size={22} /> },
+    { label: 'WhatsApp', value: contact.phone.label, href: contact.whatsapp.href, icon: <WhatsApp size={22} /> },
     { label: 'GitHub', value: contact.github.label, href: contact.github.href, icon: <Github size={22} /> },
     { label: 'LinkedIn', value: contact.linkedin.label, href: contact.linkedin.href, icon: <Linkedin size={22} /> },
     { label: 'Curriculum Vitae', value: 'PDF · English', href: cv.en.href, icon: <FileText size={22} /> },
@@ -139,8 +139,9 @@ export function Contact() {
                 href={contact.whatsapp.href}
                 target="_blank"
                 rel="noreferrer"
-                className="text-paper/80 transition-colors hover:text-royal"
+                className="inline-flex items-center gap-1.5 text-paper/80 transition-colors hover:text-royal"
               >
+                <WhatsApp size={14} />
                 WhatsApp ↗
               </a>
             </p>
