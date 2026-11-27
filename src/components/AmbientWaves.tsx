@@ -38,7 +38,7 @@ export function AmbientWaves({ ready }: { ready: boolean }) {
   return (
     <motion.div
       ref={layer}
-      className="pointer-events-none fixed inset-x-0 bottom-0 -z-10 h-[36vh] min-h-[200px]"
+      className="pointer-events-none fixed inset-x-0 bottom-0 -z-10 h-[min(36vh,25vw)] min-h-[200px]"
       initial={{ opacity: 0 }}
       animate={{ opacity: ready ? 0.85 : 0 }}
       transition={{ duration: 1.6, delay: reduce ? 0 : 0.4 }}

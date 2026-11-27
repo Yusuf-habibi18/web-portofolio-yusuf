@@ -183,7 +183,7 @@ export function Hero({ ready }: { ready: boolean }) {
       id="top"
       ref={ref}
       onMouseMove={onMove}
-      className="relative flex min-h-[100svh] flex-col overflow-hidden pt-[76px] lg:block lg:h-[100svh] lg:min-h-[680px] lg:pt-0"
+      className="relative flex min-h-[100svh] flex-col overflow-hidden pt-[76px] lg:block lg:h-[min(100svh,66vw)] lg:min-h-[680px] lg:pt-0"
       aria-label="Introduction"
     >
       {/* Back-light: a soft blue pool behind the portrait, like a stage light */}

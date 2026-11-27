@@ -2,7 +2,16 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" id="viewport" />
+    <script>
+      // Phones show the exact desktop layout, scaled down to fit ("desktop mini"):
+      // lay the page out 1280px wide and let the browser shrink it to the screen.
+      (function () {
+        if (Math.min(screen.width, screen.height) < 600) {
+          document.getElementById('viewport').setAttribute('content', 'width=1280');
+        }
+      })();
+    </script>
     <title>Yusuf Habibi Herbin — Web Developer & Aspiring Data Engineer</title>
     <meta
       name="description"
